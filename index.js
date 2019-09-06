@@ -24,16 +24,61 @@ const SsriOpts = figgyPudding({
   strict: {default: false}
 })
 
-class Transform extends MiniPass {
+class IntegrityStream extends MiniPass {
   constructor (opts) {
     super()
     this.size = 0
-    this.transform = opts.transform
+    this.opts = opts
+    // For verification
+    this.sri = opts.integrity && parse(opts.integrity, opts)
+    this.goodSri = this.sri && Object.keys(this.sri).length
+    this.algorithm = this.goodSri && this.sri.pickAlgorithm(opts)
+    this.digests = this.goodSri && this.sri[this.algorithm]
+    // Calculating stream
+    this.algorithms = Array.from(
+      new Set(opts.algorithms.concat(this.algorithm ? [this.algorithm] : []))
+    )
+    this.hashes = this.algorithms.map(crypto.createHash)
+    this.onEnd = this.onEnd.bind(this)
+  }
+  emit (ev, data) {
+    if (ev === 'end') this.onEnd()
+    return super.emit(ev, data)
   }
   write (data) {
     this.size += data.length
-    this.transform(data)
+    this.hashes.forEach(h => h.update(data))
     super.write(data)
+  }
+  onEnd () {
+    const optString = (this.opts.options && this.opts.options.length)
+    ? `?${this.opts.options.join('?')}`
+    : ''
+    const newSri = parse(this.hashes.map((h, i) => {
+      return `${this.algorithms[i]}-${h.digest('base64')}${optString}`
+    }).join(' '), this.opts)
+    // Integrity verification mode
+    const match = this.goodSri && newSri.match(this.sri, this.opts)
+    if (typeof this.opts.size === 'number' && this.size !== this.opts.size) {
+      const err = new Error(`stream size mismatch when checking ${this.sri}.\n  Wanted: ${this.opts.size}\n  Found: ${this.size}`)
+      err.code = 'EBADSIZE'
+      err.found = this.size
+      err.expected = this.opts.size
+      err.sri = this.sri
+      this.emit('error', err)
+    } else if (this.opts.integrity && !match) {
+      const err = new Error(`${this.sri} integrity checksum failed when using ${this.algorithm}: wanted ${this.digests} but got ${newSri}. (${this.size} bytes)`)
+      err.code = 'EINTEGRITY'
+      err.found = newSri
+      err.expected = this.digests
+      err.algorithm = this.algorithm
+      err.sri = this.sri
+      this.emit('error', err)
+    } else {
+      this.emit('size', this.size)
+      this.emit('integrity', newSri)
+      match && this.emit('verified', match)
+    }
   }
 }
 
@@ -303,53 +348,7 @@ function checkStream (stream, sri, opts) {
 
 module.exports.integrityStream = integrityStream
 function integrityStream (opts) {
-  opts = SsriOpts(opts)
-  // For verification
-  const sri = opts.integrity && parse(opts.integrity, opts)
-  const goodSri = sri && Object.keys(sri).length
-  const algorithm = goodSri && sri.pickAlgorithm(opts)
-  const digests = goodSri && sri[algorithm]
-  // Calculating stream
-  const algorithms = Array.from(
-    new Set(opts.algorithms.concat(algorithm ? [algorithm] : []))
-  )
-  const hashes = algorithms.map(crypto.createHash)
-  const stream = new Transform({
-    transform (chunk) { hashes.forEach(h => h.update(chunk)) }
-  })
-
-  stream.on('end', () => {
-    const optString = (opts.options && opts.options.length)
-    ? `?${opts.options.join('?')}`
-    : ''
-    const newSri = parse(hashes.map((h, i) => {
-      return `${algorithms[i]}-${h.digest('base64')}${optString}`
-    }).join(' '), opts)
-    // Integrity verification mode
-    const match = goodSri && newSri.match(sri, opts)
-    const streamSize = stream.size
-    if (typeof opts.size === 'number' && streamSize !== opts.size) {
-      const err = new Error(`stream size mismatch when checking ${sri}.\n  Wanted: ${opts.size}\n  Found: ${streamSize}`)
-      err.code = 'EBADSIZE'
-      err.found = streamSize
-      err.expected = opts.size
-      err.sri = sri
-      stream.emit('error', err)
-    } else if (opts.integrity && !match) {
-      const err = new Error(`${sri} integrity checksum failed when using ${algorithm}: wanted ${digests} but got ${newSri}. (${streamSize} bytes)`)
-      err.code = 'EINTEGRITY'
-      err.found = newSri
-      err.expected = digests
-      err.algorithm = algorithm
-      err.sri = sri
-      stream.emit('error', err)
-    } else {
-      stream.emit('size', streamSize)
-      stream.emit('integrity', newSri)
-      match && stream.emit('verified', match)
-    }
-  })
-  return stream
+  return new IntegrityStream(SsriOpts(opts))
 }
 
 module.exports.create = createIntegrity
