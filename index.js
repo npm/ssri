@@ -2,7 +2,7 @@
 
 const crypto = require('crypto')
 const figgyPudding = require('figgy-pudding')
-const Transform = require('stream').Transform
+const MiniPass = require('minipass')
 
 const SPEC_ALGORITHMS = ['sha256', 'sha384', 'sha512']
 
@@ -23,6 +23,19 @@ const SsriOpts = figgyPudding({
   size: {},
   strict: {default: false}
 })
+
+class Transform extends MiniPass {
+  constructor (opts) {
+    super()
+    this.size = 0
+    this.transform = opts.transform
+  }
+  write (data) {
+    this.size += data.length
+    this.transform(data)
+    super.write(data)
+  }
+}
 
 class Hash {
   get isHash () { return true }
@@ -301,14 +314,11 @@ function integrityStream (opts) {
     new Set(opts.algorithms.concat(algorithm ? [algorithm] : []))
   )
   const hashes = algorithms.map(crypto.createHash)
-  let streamSize = 0
   const stream = new Transform({
-    transform (chunk, enc, cb) {
-      streamSize += chunk.length
-      hashes.forEach(h => h.update(chunk, enc))
-      cb(null, chunk, enc)
-    }
-  }).on('end', () => {
+    transform (chunk) { hashes.forEach(h => h.update(chunk)) }
+  })
+
+  stream.on('end', () => {
     const optString = (opts.options && opts.options.length)
     ? `?${opts.options.join('?')}`
     : ''
@@ -317,6 +327,7 @@ function integrityStream (opts) {
     }).join(' '), opts)
     // Integrity verification mode
     const match = goodSri && newSri.match(sri, opts)
+    const streamSize = stream.size
     if (typeof opts.size === 'number' && streamSize !== opts.size) {
       const err = new Error(`stream size mismatch when checking ${sri}.\n  Wanted: ${opts.size}\n  Found: ${streamSize}`)
       err.code = 'EBADSIZE'
