@@ -1,6 +1,6 @@
-# ssri [![npm version](https://img.shields.io/npm/v/ssri.svg)](https://npm.im/ssri) [![license](https://img.shields.io/npm/l/ssri.svg)](https://npm.im/ssri) [![Travis](https://img.shields.io/travis/zkat/ssri.svg)](https://travis-ci.org/zkat/ssri) [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/zkat/ssri?svg=true)](https://ci.appveyor.com/project/zkat/ssri) [![Coverage Status](https://coveralls.io/repos/github/zkat/ssri/badge.svg?branch=latest)](https://coveralls.io/github/zkat/ssri?branch=latest)
+# ssri [![npm version](https://img.shields.io/npm/v/ssri.svg)](https://npm.im/ssri) [![license](https://img.shields.io/npm/l/ssri.svg)](https://npm.im/ssri) [![Travis](https://img.shields.io/travis/npm/ssri.svg)](https://travis-ci.org/npm/ssri) [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/npm/ssri?svg=true)](https://ci.appveyor.com/project/npm/ssri) [![Coverage Status](https://coveralls.io/repos/github/npm/ssri/badge.svg?branch=latest)](https://coveralls.io/github/npm/ssri?branch=latest)
 
-[`ssri`](https://github.com/zkat/ssri), short for Standard Subresource
+[`ssri`](https://github.com/npm/ssri), short for Standard Subresource
 Integrity, is a Node.js utility for parsing, manipulating, serializing,
 generating, and verifying [Subresource
 Integrity](https://w3c.github.io/webappsec/specs/subresourceintegrity/) hashes.
