@@ -16,7 +16,7 @@ test('parses single-entry integrity string', t => {
   const sha = hash(TEST_DATA, 'sha512')
   const integrity = `sha512-${sha}`
   t.deepEqual(ssri.parse(integrity), {
-    'sha512': [{
+    sha512: [{
       source: integrity,
       digest: sha,
       algorithm: 'sha512',
@@ -29,7 +29,7 @@ test('parses single-entry integrity string', t => {
 test('can parse single-entry string directly into Hash', t => {
   const sha = hash(TEST_DATA, 'sha512')
   const integrity = `sha512-${sha}`
-  t.deepEqual(ssri.parse(integrity, {single: true}), {
+  t.deepEqual(ssri.parse(integrity, { single: true }), {
     source: integrity,
     digest: sha,
     algorithm: 'sha512',
@@ -48,7 +48,7 @@ test('accepts Hash-likes as input', t => {
   }
   const parsed = ssri.parse(sriLike)
   t.deepEqual(parsed, {
-    'sha512': [{
+    sha512: [{
       source: `sha512-${digest}?foo`,
       algorithm,
       digest,
@@ -62,7 +62,7 @@ test('accepts Integrity-like as input', t => {
   const algorithm = 'sha512'
   const digest = hash(TEST_DATA, 'sha512')
   const sriLike = {
-    'sha512': [{
+    sha512: [{
       algorithm,
       digest,
       options: ['foo']
@@ -70,7 +70,7 @@ test('accepts Integrity-like as input', t => {
   }
   const parsed = ssri.parse(sriLike)
   t.deepEqual(parsed, {
-    'sha512': [{
+    sha512: [{
       source: `sha512-${digest}?foo`,
       algorithm,
       digest,
@@ -85,11 +85,11 @@ test('parses and groups multiple-entry strings', t => {
   const hashes = [
     `sha1-${hash(TEST_DATA, 'sha1')}`,
     `sha256-${hash(TEST_DATA, 'sha256')}`,
-    `sha1-OthERhaSh`,
-    `unknown-WoWoWoWoW`
+    'sha1-OthERhaSh',
+    'unknown-WoWoWoWoW'
   ]
   t.deepEqual(ssri.parse(hashes.join(' ')), {
-    'sha1': [{
+    sha1: [{
       source: hashes[0],
       digest: hashes[0].split('-')[1],
       algorithm: 'sha1',
@@ -100,13 +100,13 @@ test('parses and groups multiple-entry strings', t => {
       algorithm: 'sha1',
       options: []
     }],
-    'sha256': [{
+    sha256: [{
       source: hashes[1],
       digest: hashes[1].split('-')[1],
       algorithm: 'sha256',
       options: []
     }],
-    'unknown': [{
+    unknown: [{
       source: hashes[3],
       digest: hashes[3].split('-')[1],
       algorithm: 'unknown',
@@ -117,21 +117,21 @@ test('parses and groups multiple-entry strings', t => {
 })
 
 test('parses any whitespace as entry separators', t => {
-  const integrity = `\tsha512-foobarbaz \n\rsha384-bazbarfoo\n         \t  \t\t sha256-foo`
+  const integrity = '\tsha512-foobarbaz \n\rsha384-bazbarfoo\n         \t  \t\t sha256-foo'
   t.deepEqual(ssri.parse(integrity), {
-    'sha512': [{
+    sha512: [{
       source: 'sha512-foobarbaz',
       algorithm: 'sha512',
       digest: 'foobarbaz',
       options: []
     }],
-    'sha384': [{
+    sha384: [{
       source: 'sha384-bazbarfoo',
       algorithm: 'sha384',
       digest: 'bazbarfoo',
       options: []
     }],
-    'sha256': [{
+    sha256: [{
       source: 'sha256-foo',
       algorithm: 'sha256',
       digest: 'foo',
@@ -142,9 +142,9 @@ test('parses any whitespace as entry separators', t => {
 })
 
 test('discards invalid format entries', t => {
-  const missingDash = `thisisbad`
-  const missingAlgorithm = `-deadbeef`
-  const missingDigest = `sha512-`
+  const missingDash = 'thisisbad'
+  const missingAlgorithm = '-deadbeef'
+  const missingDigest = 'sha512-'
   const valid = `sha512-${hash(TEST_DATA, 'sha512')}`
   t.equal(ssri.parse([
     missingDash,
@@ -158,7 +158,7 @@ test('discards invalid format entries', t => {
 test('trims whitespace from either end', t => {
   const integrity = `      sha512-${hash(TEST_DATA, 'sha512')}    `
   t.deepEqual(ssri.parse(integrity), {
-    'sha512': [{
+    sha512: [{
       source: integrity.trim(),
       algorithm: 'sha512',
       digest: hash(TEST_DATA, 'sha512'),
@@ -171,7 +171,7 @@ test('trims whitespace from either end', t => {
 test('supports strict spec parsing', t => {
   const valid = `sha512-${hash(TEST_DATA, 'sha512')}`
   const badAlgorithm = `sha1-${hash(TEST_DATA, 'sha1')}`
-  const badBase64 = `sha512-@#$@%#$`
+  const badBase64 = 'sha512-@#$@%#$'
   const badOpts = `${valid}?\x01\x02`
   t.deepEqual(ssri.parse([
     badAlgorithm,

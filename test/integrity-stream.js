@@ -21,8 +21,8 @@ test('generates integrity', t => {
 })
 
 test('optional algorithms option', t => {
-  const TARGET = ssri.fromData('foo', {algorithms: ['sha1', 'sha256']})
-  const stream = ssri.integrityStream({algorithms: ['sha1', 'sha256']})
+  const TARGET = ssri.fromData('foo', { algorithms: ['sha1', 'sha256'] })
+  const stream = ssri.integrityStream({ algorithms: ['sha1', 'sha256'] })
   stream.write('foo')
   stream.on('data', () => {})
   let integrity

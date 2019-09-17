@@ -14,7 +14,7 @@ function hash (data, algorithm) {
 
 test('serializes Integrity-likes', t => {
   const sriLike = {
-    'sha512': [{
+    sha512: [{
       digest: 'foo',
       algorithm: 'sha512',
       options: ['ayy', 'woo']
@@ -22,7 +22,7 @@ test('serializes Integrity-likes', t => {
       digest: 'bar',
       algorithm: 'sha512'
     }],
-    'whirlpool': [{
+    whirlpool: [{
       digest: 'wut',
       algorithm: 'whirlpool'
     }]
@@ -60,7 +60,7 @@ test('serialized plain strings into a valid parsed version', t => {
 
 test('accepts a separator opt', t => {
   const sriLike = {
-    'sha512': [{
+    sha512: [{
       algorithm: 'sha512',
       digest: 'foo'
     }, {
@@ -69,11 +69,11 @@ test('accepts a separator opt', t => {
     }]
   }
   t.equal(
-    ssri.stringify(sriLike, {sep: '\n'}),
+    ssri.stringify(sriLike, { sep: '\n' }),
     'sha512-foo\nsha512-bar'
   )
   t.equal(
-    ssri.stringify(sriLike, {sep: ' | '}),
+    ssri.stringify(sriLike, { sep: ' | ' }),
     'sha512-foo | sha512-bar'
   )
   t.done()
@@ -82,11 +82,11 @@ test('accepts a separator opt', t => {
 test('support strict serialization', t => {
   const sriLike = {
     // only sha256, sha384, and sha512 are allowed by the spec
-    'sha1': [{
+    sha1: [{
       algorithm: 'sha1',
       digest: 'feh'
     }],
-    'sha256': [{
+    sha256: [{
       algorithm: 'sha256',
       // Must be valid base64
       digest: 'wut!!!??!!??!'
@@ -95,7 +95,7 @@ test('support strict serialization', t => {
       digest: hash(TEST_DATA, 'sha256'),
       options: ['foo']
     }],
-    'sha512': [{
+    sha512: [{
       algorithm: 'sha512',
       digest: hash(TEST_DATA, 'sha512'),
       // Options must use VCHAR
@@ -103,12 +103,12 @@ test('support strict serialization', t => {
     }]
   }
   t.equal(
-    ssri.stringify(sriLike, {strict: true}),
+    ssri.stringify(sriLike, { strict: true }),
     `sha256-${hash(TEST_DATA, 'sha256')}?foo`,
     'entries that do not conform to strict spec interpretation removed'
   )
   t.equal(
-    ssri.stringify('sha512-WrLorGiX4iEWOOOaJSiCrmDIamA47exH+Bz7tVwIPb4sCU8w4iNqGCqYuspMMeU5pgz/sU7koP5u8W3RCUojGw== sha256-Qhx213Vjr6GRSEawEL0WTzlb00whAuXpngy5zxc8HYc=', {sep: ' \r|\n\t', strict: true}),
+    ssri.stringify('sha512-WrLorGiX4iEWOOOaJSiCrmDIamA47exH+Bz7tVwIPb4sCU8w4iNqGCqYuspMMeU5pgz/sU7koP5u8W3RCUojGw== sha256-Qhx213Vjr6GRSEawEL0WTzlb00whAuXpngy5zxc8HYc=', { sep: ' \r|\n\t', strict: true }),
     'sha512-WrLorGiX4iEWOOOaJSiCrmDIamA47exH+Bz7tVwIPb4sCU8w4iNqGCqYuspMMeU5pgz/sU7koP5u8W3RCUojGw== \r \n\tsha256-Qhx213Vjr6GRSEawEL0WTzlb00whAuXpngy5zxc8HYc=',
     'strict mode replaces non-whitespace characters in separator with space'
   )

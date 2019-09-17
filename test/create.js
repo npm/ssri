@@ -14,7 +14,7 @@ test('works just like from', function (t) {
 })
 
 test('can pass options', function (t) {
-  const integrity = ssri.create({algorithms: ['sha256', 'sha384']}).update('hi').digest()
+  const integrity = ssri.create({ algorithms: ['sha256', 'sha384'] }).update('hi').digest()
 
   t.equals(
     integrity + '',

@@ -14,12 +14,12 @@ test('toString()', t => {
     'integrity objects from ssri.parse() can use toString()'
   )
   t.equal(
-    sri.toString({strict: true}),
+    sri.toString({ strict: true }),
     'sha256-Qhx213Vjr6GRSEawEL0WTzlb00whAuXpngy5zxc8HYc=',
     'accepts strict mode option'
   )
   t.equal(
-    sri.toString({sep: '\n'}),
+    sri.toString({ sep: '\n' }),
     'sha1-eUN/Xt2hP5wGabl43XqQZt0gWfE=\nsha256-Qhx213Vjr6GRSEawEL0WTzlb00whAuXpngy5zxc8HYc=',
     'accepts separator option'
   )
@@ -49,21 +49,21 @@ test('concat()', t => {
     'concatenates with a string'
   )
   t.equal(
-    sri.concat({digest: 'bar', algorithm: 'sha384'}).toString(),
+    sri.concat({ digest: 'bar', algorithm: 'sha384' }).toString(),
     'sha512-foo sha384-bar',
     'concatenates with an Hash-like'
   )
   t.equal(
     sri.concat({
-      'sha384': [{digest: 'bar', algorithm: 'sha384'}],
-      'sha1': [{digest: 'baz', algorithm: 'sha1'}]
+      sha384: [{ digest: 'bar', algorithm: 'sha384' }],
+      sha1: [{ digest: 'baz', algorithm: 'sha1' }]
     }).toString(),
     'sha512-foo sha384-bar sha1-baz',
     'concatenates with an Integrity-like'
   )
   t.equal(
     sri.concat(
-      {digest: 'bar', algorithm: 'sha1'}
+      { digest: 'bar', algorithm: 'sha1' }
     ).concat(
       'sha1-baz'
     ).concat(
@@ -97,7 +97,7 @@ test('match()', t => {
     algorithm: 'sha1',
     digest: 'foo'
   }, 'accepts other Hash objects')
-  t.similar(sri.match({digest: 'foo', algorithm: 'sha1'}), {
+  t.similar(sri.match({ digest: 'foo', algorithm: 'sha1' }), {
     algorithm: 'sha1',
     digest: 'foo'
   }, 'accepts Hash-like objects')
@@ -137,7 +137,7 @@ test('hexDigest()', t => {
     Buffer.from('foo', 'base64').toString('hex'),
     'returned hex version of base64 digest')
   t.equal(
-    ssri.parse('sha512-bar', {single: true}).hexDigest(),
+    ssri.parse('sha512-bar', { single: true }).hexDigest(),
     Buffer.from('bar', 'base64').toString('hex'),
     'returned hex version of base64 digest')
   t.done()
@@ -147,7 +147,7 @@ test('isIntegrity and isHash', t => {
   const sri = ssri.parse('sha512-bar')
   t.ok(sri.isIntegrity, 'full sri has !!.isIntegrity')
   t.ok(
-    sri['sha512'][0].isHash,
+    sri.sha512[0].isHash,
     'sri hash has !!.isHash'
   )
   t.done()
