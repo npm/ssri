@@ -86,6 +86,7 @@ test('checkData', t => {
   t.throws(() => {
     ssri.checkData('nope', '', { error: true })
   }, /No valid integrity hashes/, 'errors on empty sri input if error: true')
+
   t.deepEqual(
     ssri.checkData(TEST_DATA, [
       'sha512-nope',
@@ -101,6 +102,23 @@ test('checkData', t => {
     }).sha1[0],
     'opts.pickAlgorithm can be used to customize which one is used.'
   )
+
+  t.deepEqual(
+    ssri.checkData(TEST_DATA, [
+      `sha256-${hash(TEST_DATA, 'sha256')}`,
+      `sha1-${hash(TEST_DATA, 'sha1')}`,
+      `sha512-${hash(TEST_DATA, 'sha512')}`
+    ].join(' '), {
+      pickAlgorithm: (a, b) => {
+        return false
+      }
+    }),
+    ssri.parse({
+      algorithm: 'sha256', digest: hash(TEST_DATA, 'sha256')
+    }).sha256[0],
+    'opts.pickAlgorithm can return false to keep the first option'
+  )
+
   t.deepEqual(
     ssri.checkData(TEST_DATA, [
       `sha1-${hash(TEST_DATA, 'sha1')}`,

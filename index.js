@@ -91,6 +91,13 @@ class Hash {
     opts = SsriOpts(opts)
     const strict = !!opts.strict
     this.source = hash.trim()
+
+    // set default values so that we make V8 happy to
+    // always see a familiar object template.
+    this.digest = ''
+    this.algorithm = ''
+    this.options = []
+
     // 3.1. Integrity metadata (called "Hash" by ssri)
     // https://w3c.github.io/webappsec-subresource-integrity/#integrity-metadata-description
     const match = this.source.match(
@@ -104,7 +111,9 @@ class Hash {
     this.digest = match[2]
 
     const rawOpts = match[3]
-    this.options = rawOpts ? rawOpts.slice(1).split('?') : []
+    if (rawOpts) {
+      this.options = rawOpts.slice(1).split('?')
+    }
   }
 
   hexDigest () {
@@ -132,7 +141,7 @@ class Hash {
         // Option syntax is strictly visual chars.
         // https://w3c.github.io/webappsec-subresource-integrity/#grammardef-option-expression
         // https://tools.ietf.org/html/rfc5234#appendix-B.1
-        (this.options || []).every(opt => opt.match(VCHAR_REGEX))
+        this.options.every(opt => opt.match(VCHAR_REGEX))
       )) {
         return ''
       }
@@ -275,6 +284,9 @@ function fromData (data, opts) {
       `${algo}-${digest}${optString}`,
       opts
     )
+    /* istanbul ignore else - it would be VERY strange if the string we
+     * just calculated with an algo did not have an algo or digest.
+     */
     if (hash.algorithm && hash.digest) {
       const algo = hash.algorithm
       if (!acc[algo]) { acc[algo] = [] }
@@ -384,6 +396,9 @@ function createIntegrity (opts) {
           `${algo}-${digest}${optString}`,
           opts
         )
+        /* istanbul ignore else - it would be VERY strange if the hash we
+         * just calculated with an algo did not have an algo or digest.
+         */
         if (hash.algorithm && hash.digest) {
           const algo = hash.algorithm
           if (!acc[algo]) { acc[algo] = [] }

@@ -58,6 +58,49 @@ test('accepts Hash-likes as input', t => {
   t.done()
 })
 
+test('omits unsupported algos in strict mode only', t => {
+  const hash = new Array(50).join('x')
+
+  t.match(ssri.parse(`foo-${hash}`, {
+    strict: true,
+    single: true
+  }), {
+    source: `foo-${hash}`,
+    algorithm: '',
+    digest: '',
+    options: []
+  })
+
+  t.match(ssri.parse(`foo-${hash}`, {
+    strict: false,
+    single: true
+  }), {
+    source: `foo-${hash}`,
+    algorithm: 'foo',
+    digest: hash,
+    options: []
+  })
+
+  t.match(ssri.parse(`sha512-${hash}`, {
+    strict: true,
+    single: true
+  }), {
+    source: `sha512-${hash}`,
+    algorithm: 'sha512',
+    digest: hash,
+    options: []
+  })
+
+  t.end()
+})
+
+test('use " " as sep when opts.sep is falsey', t => {
+  const hash = ssri.parse('yum-somehash foo-barbaz')
+  t.equal(hash.toString({ sep: false }), 'yum-somehash foo-barbaz')
+  t.equal(hash.toString({ sep: '\t' }), 'yum-somehash\tfoo-barbaz')
+  t.end()
+})
+
 test('accepts Integrity-like as input', t => {
   const algorithm = 'sha512'
   const digest = hash(TEST_DATA, 'sha512')
