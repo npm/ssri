@@ -17,7 +17,6 @@ const SsriOpts = figgyPudding({
   integrity: {},
   options: { default: [] },
   pickAlgorithm: { default: () => getPrioritizedHash },
-  Promise: { default: () => Promise },
   sep: { default: ' ' },
   single: { default: false },
   size: {},
@@ -299,9 +298,8 @@ function fromData (data, opts) {
 module.exports.fromStream = fromStream
 function fromStream (stream, opts) {
   opts = SsriOpts(opts)
-  const P = opts.Promise || Promise
   const istream = integrityStream(opts)
-  return new P((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     stream.pipe(istream)
     stream.on('error', reject)
     istream.on('error', reject)
@@ -354,11 +352,10 @@ function checkData (data, sri, opts) {
 module.exports.checkStream = checkStream
 function checkStream (stream, sri, opts) {
   opts = SsriOpts(opts)
-  const P = opts.Promise || Promise
   const checker = integrityStream(opts.concat({
     integrity: sri
   }))
-  return new P((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     stream.pipe(checker)
     stream.on('error', reject)
     checker.on('error', reject)
