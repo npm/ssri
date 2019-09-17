@@ -49,7 +49,7 @@ class IntegrityStream extends MiniPass {
   write (data) {
     this.size += data.length
     this.hashes.forEach(h => h.update(data))
-    super.write(data)
+    return super.write(data)
   }
 
   onEnd () {
