@@ -1,6 +1,29 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [7.0.0](https://github.com/npm/ssri/compare/v6.0.1...v7.0.0) (2019-09-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* ssri no longer accepts a Promise option, and does not
+use, return, or rely on Bluebird promises.
+* drop support for Node.js v6.
+
+We knew this was coming, and the Stream changes are breaking anyway.
+May as well do this now.
+* **streams:** this replaces the Node.js stream with a Minipass
+stream.  See http://npm.im/minipass for documentation.
+
+### Bug Fixes
+
+* return super.write() return value ([55b055d](https://github.com/npm/ssri/commit/55b055d))
+
+
+* Use native promises only ([6d13165](https://github.com/npm/ssri/commit/6d13165))
+* update tap, standard, standard-version, travis ([2e54956](https://github.com/npm/ssri/commit/2e54956))
+* **streams:** replace transform streams with minipass ([363995e](https://github.com/npm/ssri/commit/363995e))
 
 <a name="6.0.1"></a>
 ## [6.0.1](https://github.com/npm/ssri/compare/v6.0.0...v6.0.1) (2018-08-27)
