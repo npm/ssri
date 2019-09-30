@@ -38,16 +38,19 @@
   "license": "ISC",
   "dependencies": {
     "figgy-pudding": "^3.5.1",
-    "minipass": "^2.5.1"
+    "minipass": "^3.0.0"
   },
   "devDependencies": {
     "standard": "^14.3.0",
     "standard-version": "^7.0.0",
-    "tap": "^14.6.4",
+    "tap": "^14.6.9",
     "weallbehave": "^1.2.0",
     "weallcontribute": "^1.0.8"
   },
   "tap": {
     "check-coverage": true
+  },
+  "engines": {
+    "node": ">= 8"
   }
 }
