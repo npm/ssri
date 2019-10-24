@@ -43,7 +43,7 @@
   "devDependencies": {
     "standard": "^14.3.0",
     "standard-version": "^7.0.0",
-    "tap": "^14.6.9",
+    "tap": "^14.8.2",
     "weallbehave": "^1.2.0",
     "weallcontribute": "^1.0.8"
   },
