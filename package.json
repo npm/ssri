@@ -38,7 +38,7 @@
   "license": "ISC",
   "dependencies": {
     "figgy-pudding": "^3.5.1",
-    "minipass": "^3.0.0"
+    "minipass": "^3.1.1"
   },
   "devDependencies": {
     "standard": "^14.3.0",
