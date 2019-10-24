@@ -47,9 +47,9 @@ class IntegrityStream extends MiniPass {
   [_getOptions] () {
     const opts = this.opts
     // For verification
-    this.sri = opts.integrity && parse(opts.integrity, opts)
+    this.sri = opts.integrity ? parse(opts.integrity, opts) : null
     this.expectedSize = opts.size
-    this.goodSri = this.sri ? Object.keys(this.sri).length || null : null
+    this.goodSri = this.sri ? !!Object.keys(this.sri).length : false
     this.algorithm = this.goodSri ? this.sri.pickAlgorithm(opts) : null
     this.digests = this.goodSri ? this.sri[this.algorithm] : null
     this.optString = getOptString(opts.options)
