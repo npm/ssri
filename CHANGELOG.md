@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [7.1.0](https://github.com/npm/ssri/compare/v7.0.1...v7.1.0) (2019-10-24)
+
+
+### Bug Fixes
+
+* Do not blow up if the opts object is mutated ([806e8c8](https://github.com/npm/ssri/commit/806e8c8))
+
+
+### Features
+
+* Add Integrity#merge method ([0572c1d](https://github.com/npm/ssri/commit/0572c1d)), closes [#4](https://github.com/npm/ssri/issues/4)
+
 ### [7.0.1](https://github.com/npm/ssri/compare/v7.0.0...v7.0.1) (2019-09-30)
 
 ## [7.0.0](https://github.com/npm/ssri/compare/v6.0.1...v7.0.0) (2019-09-18)
