@@ -198,6 +198,24 @@ class Integrity {
     return parse(this, { single: true }).hexDigest()
   }
 
+  // add additional hashes to an integrity value, but prevent
+  // *changing* an existing integrity hash.
+  merge (integrity, opts) {
+    opts = SsriOpts(opts)
+    const other = parse(integrity, opts)
+    for (const algo in other) {
+      if (this[algo]) {
+        if (!this[algo].find(hash =>
+          other[algo].find(otherhash =>
+            hash.digest === otherhash.digest))) {
+          throw new Error('hashes do not match, cannot update integrity')
+        }
+      } else {
+        this[algo] = other[algo]
+      }
+    }
+  }
+
   match (integrity, opts) {
     opts = SsriOpts(opts)
     const other = parse(integrity, opts)
