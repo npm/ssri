@@ -23,26 +23,40 @@ const SsriOpts = figgyPudding({
   strict: { default: false }
 })
 
+const getOptString = options => !options || !options.length ? ''
+  : `?${options.join('?')}`
+
+const _onEnd = Symbol('_onEnd')
+const _getOptions = Symbol('_getOptions')
 class IntegrityStream extends MiniPass {
   constructor (opts) {
     super()
     this.size = 0
     this.opts = opts
-    // For verification
-    this.sri = opts.integrity && parse(opts.integrity, opts)
-    this.goodSri = this.sri && Object.keys(this.sri).length
-    this.algorithm = this.goodSri && this.sri.pickAlgorithm(opts)
-    this.digests = this.goodSri && this.sri[this.algorithm]
-    // Calculating stream
+
+    // may be overridden later, but set now for class consistency
+    this[_getOptions]()
+
+    // options used for calculating stream.  can't be changed.
     this.algorithms = Array.from(
       new Set(opts.algorithms.concat(this.algorithm ? [this.algorithm] : []))
     )
     this.hashes = this.algorithms.map(crypto.createHash)
-    this.onEnd = this.onEnd.bind(this)
+  }
+
+  [_getOptions] () {
+    const opts = this.opts
+    // For verification
+    this.sri = opts.integrity && parse(opts.integrity, opts)
+    this.expectedSize = opts.size
+    this.goodSri = this.sri ? Object.keys(this.sri).length || null : null
+    this.algorithm = this.goodSri ? this.sri.pickAlgorithm(opts) : null
+    this.digests = this.goodSri ? this.sri[this.algorithm] : null
+    this.optString = getOptString(opts.options)
   }
 
   emit (ev, data) {
-    if (ev === 'end') this.onEnd()
+    if (ev === 'end') this[_onEnd]()
     return super.emit(ev, data)
   }
 
@@ -52,23 +66,23 @@ class IntegrityStream extends MiniPass {
     return super.write(data)
   }
 
-  onEnd () {
-    const optString = (this.opts.options && this.opts.options.length)
-      ? `?${this.opts.options.join('?')}`
-      : ''
+  [_onEnd] () {
+    if (!this.goodSri) {
+      this[_getOptions]()
+    }
     const newSri = parse(this.hashes.map((h, i) => {
-      return `${this.algorithms[i]}-${h.digest('base64')}${optString}`
+      return `${this.algorithms[i]}-${h.digest('base64')}${this.optString}`
     }).join(' '), this.opts)
     // Integrity verification mode
     const match = this.goodSri && newSri.match(this.sri, this.opts)
-    if (typeof this.opts.size === 'number' && this.size !== this.opts.size) {
-      const err = new Error(`stream size mismatch when checking ${this.sri}.\n  Wanted: ${this.opts.size}\n  Found: ${this.size}`)
+    if (typeof this.expectedSize === 'number' && this.size !== this.expectedSize) {
+      const err = new Error(`stream size mismatch when checking ${this.sri}.\n  Wanted: ${this.expectedSize}\n  Found: ${this.size}`)
       err.code = 'EBADSIZE'
       err.found = this.size
-      err.expected = this.opts.size
+      err.expected = this.expectedSize
       err.sri = this.sri
       this.emit('error', err)
-    } else if (this.opts.integrity && !match) {
+    } else if (this.sri && !match) {
       const err = new Error(`${this.sri} integrity checksum failed when using ${this.algorithm}: wanted ${this.digests} but got ${newSri}. (${this.size} bytes)`)
       err.code = 'EINTEGRITY'
       err.found = newSri
@@ -260,9 +274,7 @@ function stringify (obj, opts) {
 module.exports.fromHex = fromHex
 function fromHex (hexDigest, algorithm, opts) {
   opts = SsriOpts(opts)
-  const optString = opts.options && opts.options.length
-    ? `?${opts.options.join('?')}`
-    : ''
+  const optString = getOptString(opts.options)
   return parse(
     `${algorithm}-${
       Buffer.from(hexDigest, 'hex').toString('base64')
@@ -274,9 +286,7 @@ module.exports.fromData = fromData
 function fromData (data, opts) {
   opts = SsriOpts(opts)
   const algorithms = opts.algorithms
-  const optString = opts.options && opts.options.length
-    ? `?${opts.options.join('?')}`
-    : ''
+  const optString = getOptString(opts.options)
   return algorithms.reduce((acc, algo) => {
     const digest = crypto.createHash(algo).update(data).digest('base64')
     const hash = new Hash(
@@ -375,9 +385,7 @@ module.exports.create = createIntegrity
 function createIntegrity (opts) {
   opts = SsriOpts(opts)
   const algorithms = opts.algorithms
-  const optString = opts.options.length
-    ? `?${opts.options.join('?')}`
-    : ''
+  const optString = getOptString(opts.options)
 
   const hashes = algorithms.map(crypto.createHash)
 
