@@ -12,7 +12,7 @@ const STRICT_SRI_REGEX = /^([^-]+)-([A-Za-z0-9+/=]{44,88})(\?[\x21-\x7E]*)*$/
 const VCHAR_REGEX = /^[\x21-\x7E]+$/
 
 const SsriOpts = figgyPudding({
-  algorithms: { default: ['sha512'] },
+  algorithms: { default: ['sha1', 'sha512'] },
   error: { default: false },
   integrity: {},
   options: { default: [] },

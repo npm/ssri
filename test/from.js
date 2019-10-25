@@ -33,13 +33,13 @@ test('fromHex', t => {
 test('fromData', t => {
   t.equal(
     ssri.fromData(TEST_DATA).toString(),
-    `sha512-${hash(TEST_DATA, 'sha512')}`,
-    'generates sha512 integrity object from Buffer data'
+    `sha1-${hash(TEST_DATA, 'sha1')} sha512-${hash(TEST_DATA, 'sha512')}`,
+    'generates sha1 & sha512 integrity object from Buffer data'
   )
   t.equal(
     ssri.fromData(TEST_DATA.toString('utf8')).toString(),
-    `sha512-${hash(TEST_DATA, 'sha512')}`,
-    'generates sha512 integrity object from String data'
+    `sha1-${hash(TEST_DATA, 'sha1')} sha512-${hash(TEST_DATA, 'sha512')}`,
+    'generates sha1 & sha512 integrity object from String data'
   )
   t.equal(
     ssri.fromData(TEST_DATA, { algorithms: ['sha256', 'sha384'] }).toString(),
@@ -65,8 +65,8 @@ test('fromStream', t => {
   return ssri.fromStream(stream).then(integrity => {
     t.equal(
       integrity.toString(),
-      `sha512-${hash(TEST_DATA, 'sha512')}`,
-      'generates sha512 from a stream'
+      `sha1-${hash(TEST_DATA, 'sha1')} sha512-${hash(TEST_DATA, 'sha512')}`,
+      'generates sha1 & sha512 from a stream'
     )
     t.ok(streamEnded, 'source stream ended')
     return ssri.fromStream(fileStream(), {
