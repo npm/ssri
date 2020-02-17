@@ -37,21 +37,27 @@ class IntegrityStream extends MiniPass {
     this[_getOptions]()
 
     // options used for calculating stream.  can't be changed.
+    const { algorithms = defaultOpts.algorithms } = opts
     this.algorithms = Array.from(
-      new Set(opts.algorithms.concat(this.algorithm ? [this.algorithm] : []))
+      new Set(algorithms.concat(this.algorithm ? [this.algorithm] : []))
     )
     this.hashes = this.algorithms.map(crypto.createHash)
   }
 
   [_getOptions] () {
-    const opts = this.opts
+    const {
+      integrity,
+      size,
+      options
+    } = { ...defaultOpts, ...this.opts }
+
     // For verification
-    this.sri = opts.integrity ? parse(opts.integrity, opts) : null
-    this.expectedSize = opts.size
+    this.sri = integrity ? parse(integrity, this.opts) : null
+    this.expectedSize = size
     this.goodSri = this.sri ? !!Object.keys(this.sri).length : false
-    this.algorithm = this.goodSri ? this.sri.pickAlgorithm(opts) : null
+    this.algorithm = this.goodSri ? this.sri.pickAlgorithm(this.opts) : null
     this.digests = this.goodSri ? this.sri[this.algorithm] : null
-    this.optString = getOptString(opts.options)
+    this.optString = getOptString(options)
   }
 
   emit (ev, data) {
@@ -393,8 +399,8 @@ function checkStream (stream, sri, opts) {
 }
 
 module.exports.integrityStream = integrityStream
-function integrityStream (opts) {
-  return new IntegrityStream(ssriOpts(opts))
+function integrityStream (opts = {}) {
+  return new IntegrityStream(opts)
 }
 
 module.exports.create = createIntegrity
