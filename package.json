@@ -1,6 +1,6 @@
 {
   "name": "ssri",
-  "version": "7.1.0",
+  "version": "8.0.0",
   "description": "Standard Subresource Integrity library -- parses, serializes, generates, and verifies integrity metadata according to the SRI spec.",
   "main": "index.js",
   "files": [],
@@ -15,7 +15,7 @@
     "lint": "standard"
   },
   "tap": {
-    "check-coverage": "true"
+    "check-coverage": true
   },
   "repository": "https://github.com/npm/ssri",
   "keywords": [
@@ -45,9 +45,6 @@
     "standard": "^14.3.1",
     "standard-version": "^7.1.0",
     "tap": "^14.10.6"
-  },
-  "tap": {
-    "check-coverage": true
   },
   "engines": {
     "node": ">= 8"
