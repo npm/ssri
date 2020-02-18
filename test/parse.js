@@ -226,3 +226,13 @@ test('supports strict spec parsing', t => {
   }).toString(), valid, 'entries that fail strict check rejected')
   t.done()
 })
+
+test('does not allow weird stuff in sri', t => {
+  const badInt = 'mdc2\u0000/../../../hello_what_am_I_doing_here-Juwtg9UFssfrRfwsXu+n/Q=='
+  const bad = ssri.parse(badInt)
+  const badStrict = ssri.parse(badInt, { strict: true })
+  const expect = ssri.parse('')
+  t.strictSame(bad, expect)
+  t.strictSame(badStrict, expect)
+  t.end()
+})
