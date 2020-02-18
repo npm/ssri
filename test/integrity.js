@@ -125,9 +125,6 @@ test('pickAlgorithm()', t => {
     'sha384',
     'custom pickAlgorithm function accepted'
   )
-  t.throws(() => {
-    ssri.parse('').pickAlgorithm()
-  }, /No algorithms available/, 'SRIs without algorithms are invalid')
   t.done()
 })
 
