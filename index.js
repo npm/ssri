@@ -177,6 +177,10 @@ class Integrity {
     return this.toString()
   }
 
+  isEmpty () {
+    return Object.keys(this).length === 0
+  }
+
   toString (opts) {
     opts = ssriOpts(opts)
     let sep = opts.sep || ' '
@@ -240,11 +244,6 @@ class Integrity {
     opts = ssriOpts(opts)
     const pickAlgorithm = opts.pickAlgorithm
     const keys = Object.keys(this)
-    if (!keys.length) {
-      throw new Error(`No algorithms available for ${
-        JSON.stringify(this.toString())
-      }`)
-    }
     return keys.reduce((acc, algo) => {
       return pickAlgorithm(acc, algo) || acc
     })
@@ -253,6 +252,7 @@ class Integrity {
 
 module.exports.parse = parse
 function parse (sri, opts) {
+  if (!sri) return null
   opts = ssriOpts(opts)
   if (typeof sri === 'string') {
     return _parse(sri, opts)
@@ -271,7 +271,7 @@ function _parse (integrity, opts) {
   if (opts.single) {
     return new Hash(integrity, opts)
   }
-  return integrity.trim().split(/\s+/).reduce((acc, string) => {
+  const hashes = integrity.trim().split(/\s+/).reduce((acc, string) => {
     const hash = new Hash(string, opts)
     if (hash.algorithm && hash.digest) {
       const algo = hash.algorithm
@@ -280,6 +280,7 @@ function _parse (integrity, opts) {
     }
     return acc
   }, new Integrity())
+  return hashes.isEmpty() ? null : hashes
 }
 
 module.exports.stringify = stringify
@@ -347,7 +348,7 @@ module.exports.checkData = checkData
 function checkData (data, sri, opts) {
   opts = ssriOpts(opts)
   sri = parse(sri, opts)
-  if (!Object.keys(sri).length) {
+  if (!sri || !Object.keys(sri).length) {
     if (opts.error) {
       throw Object.assign(
         new Error('No valid integrity hashes to check against'), {
@@ -386,6 +387,14 @@ module.exports.checkStream = checkStream
 function checkStream (stream, sri, opts) {
   opts = ssriOpts(opts)
   opts.integrity = sri
+  sri = parse(sri, opts)
+  if (!sri || !Object.keys(sri).length) {
+    return Promise.reject(Object.assign(
+      new Error('No valid integrity hashes to check against'), {
+        code: 'EINTEGRITY'
+      }
+    ))
+  }
   const checker = integrityStream(opts)
   return new Promise((resolve, reject) => {
     stream.pipe(checker)
