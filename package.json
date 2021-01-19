@@ -42,8 +42,8 @@
     "minipass": "^3.1.1"
   },
   "devDependencies": {
-    "standard": "^14.3.1",
-    "standard-version": "^7.1.0",
+    "standard": "^16.0.3",
+    "standard-version": "^9.1.0",
     "tap": "^14.10.6"
   },
   "engines": {
