@@ -26,6 +26,34 @@ test('parses single-entry integrity string', t => {
   t.done()
 })
 
+test('parses options from integrity string', t => {
+  const sha = hash(TEST_DATA, 'sha512')
+  const integrity = `sha512-${sha}?one?two?three`
+  t.deepEqual(ssri.parse(integrity), {
+    sha512: [{
+      source: integrity,
+      digest: sha,
+      algorithm: 'sha512',
+      options: ['one', 'two', 'three']
+    }]
+  }, 'single entry parsed into full Integrity instance')
+  t.done()
+})
+
+test('parses options from integrity string in strict mode', t => {
+  const sha = hash(TEST_DATA, 'sha512')
+  const integrity = `sha512-${sha}?one?two?three`
+  t.deepEqual(ssri.parse(integrity, { strict: true }), {
+    sha512: [{
+      source: integrity,
+      digest: sha,
+      algorithm: 'sha512',
+      options: ['one', 'two', 'three']
+    }]
+  }, 'single entry parsed into full Integrity instance')
+  t.done()
+})
+
 test('can parse single-entry string directly into Hash', t => {
   const sha = hash(TEST_DATA, 'sha512')
   const integrity = `sha512-${sha}`
