@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [7.1.1](https://github.com/npm/ssri/compare/v7.1.0...v7.1.1) (2021-05-17)
+
+
+### Bug Fixes
+
+* backport regex change from 8.0.1 ([809c84d](https://github.com/npm/ssri/commit/809c84d)), closes [#20](https://github.com/npm/ssri/issues/20)
+
 ## [7.1.0](https://github.com/npm/ssri/compare/v7.0.1...v7.1.0) (2019-10-24)
 
 
