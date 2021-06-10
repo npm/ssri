@@ -32,7 +32,7 @@ test('serializes Integrity-likes', t => {
     'sha512-foo?ayy?woo sha512-bar whirlpool-wut',
     'stringification contains correct data for all entries'
   )
-  t.done()
+  t.end()
 })
 
 test('serializes Hash-likes', t => {
@@ -45,7 +45,7 @@ test('serializes Hash-likes', t => {
     'sha512-foo',
     'serialization has correct data'
   )
-  t.done()
+  t.end()
 })
 
 test('serialized plain strings into a valid parsed version', t => {
@@ -55,7 +55,7 @@ test('serialized plain strings into a valid parsed version', t => {
     'sha512-foo?bar sha1-nope',
     'cleaned-up string with identical contents generated'
   )
-  t.done()
+  t.end()
 })
 
 test('accepts a separator opt', t => {
@@ -76,7 +76,7 @@ test('accepts a separator opt', t => {
     ssri.stringify(sriLike, { sep: ' | ' }),
     'sha512-foo | sha512-bar'
   )
-  t.done()
+  t.end()
 })
 
 test('support strict serialization', t => {
@@ -112,5 +112,5 @@ test('support strict serialization', t => {
     'sha512-WrLorGiX4iEWOOOaJSiCrmDIamA47exH+Bz7tVwIPb4sCU8w4iNqGCqYuspMMeU5pgz/sU7koP5u8W3RCUojGw== \r \n\tsha256-Qhx213Vjr6GRSEawEL0WTzlb00whAuXpngy5zxc8HYc=',
     'strict mode replaces non-whitespace characters in separator with space'
   )
-  t.done()
+  t.end()
 })

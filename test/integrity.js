@@ -23,7 +23,7 @@ test('toString()', t => {
     'sha1-eUN/Xt2hP5wGabl43XqQZt0gWfE=\nsha256-Qhx213Vjr6GRSEawEL0WTzlb00whAuXpngy5zxc8HYc=',
     'accepts separator option'
   )
-  t.done()
+  t.end()
 })
 
 test('toJSON()', t => {
@@ -38,7 +38,7 @@ test('toJSON()', t => {
     'sha512-foo',
     'hash objects should toJSON also'
   )
-  t.done()
+  t.end()
 })
 
 test('concat()', t => {
@@ -80,34 +80,34 @@ test('concat()', t => {
     'sha512-WrLorGiX4iEWOOOaJSiCrmDIamA47exH+Bz7tVwIPb4sCU8w4iNqGCqYuspMMeU5pgz/sU7koP5u8W3RCUojGw==',
     'accepts strict mode option'
   )
-  t.done()
+  t.end()
 })
 
 test('match()', t => {
   const sri = ssri.parse('sha1-foo sha512-bar')
-  t.similar(sri.match('sha1-foo'), {
+  t.match(sri.match('sha1-foo'), {
     algorithm: 'sha1',
     digest: 'foo'
   }, 'returns the matching hash')
-  t.similar(sri.match(ssri.parse('sha1-foo')), {
+  t.match(sri.match(ssri.parse('sha1-foo')), {
     algorithm: 'sha1',
     digest: 'foo'
   }, 'accepts other Integrity objects')
-  t.similar(sri.match(ssri.parse('sha1-foo')), {
+  t.match(sri.match(ssri.parse('sha1-foo')), {
     algorithm: 'sha1',
     digest: 'foo'
   }, 'accepts other Hash objects')
-  t.similar(sri.match({ digest: 'foo', algorithm: 'sha1' }), {
+  t.match(sri.match({ digest: 'foo', algorithm: 'sha1' }), {
     algorithm: 'sha1',
     digest: 'foo'
   }, 'accepts Hash-like objects')
-  t.similar(sri.match('sha1-bar sha512-bar'), {
+  t.match(sri.match('sha1-bar sha512-bar'), {
     algorithm: 'sha512',
     digest: 'bar'
   }, 'returns the strongest match')
   t.notOk(sri.match('sha512-foo'), 'falsy when match fails')
   t.notOk(sri.match('sha384-foo'), 'falsy when match fails')
-  t.done()
+  t.end()
 })
 
 test('pickAlgorithm()', t => {
@@ -125,7 +125,7 @@ test('pickAlgorithm()', t => {
     'sha384',
     'custom pickAlgorithm function accepted'
   )
-  t.done()
+  t.end()
 })
 
 test('hexDigest()', t => {
@@ -137,7 +137,7 @@ test('hexDigest()', t => {
     ssri.parse('sha512-bar', { single: true }).hexDigest(),
     Buffer.from('bar', 'base64').toString('hex'),
     'returned hex version of base64 digest')
-  t.done()
+  t.end()
 })
 
 test('isIntegrity and isHash', t => {
@@ -147,10 +147,10 @@ test('isIntegrity and isHash', t => {
     sri.sha512[0].isHash,
     'sri hash has !!.isHash'
   )
-  t.done()
+  t.end()
 })
 
 test('semi-private', t => {
   t.equal(ssri.Integrity, undefined, 'Integrity class is module-private.')
-  t.done()
+  t.end()
 })

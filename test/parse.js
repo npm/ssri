@@ -15,7 +15,7 @@ function hash (data, algorithm) {
 test('parses single-entry integrity string', t => {
   const sha = hash(TEST_DATA, 'sha512')
   const integrity = `sha512-${sha}`
-  t.deepEqual(ssri.parse(integrity), {
+  t.same(ssri.parse(integrity), {
     sha512: [{
       source: integrity,
       digest: sha,
@@ -23,13 +23,13 @@ test('parses single-entry integrity string', t => {
       options: []
     }]
   }, 'single entry parsed into full Integrity instance')
-  t.done()
+  t.end()
 })
 
 test('parses options from integrity string', t => {
   const sha = hash(TEST_DATA, 'sha512')
   const integrity = `sha512-${sha}?one?two?three`
-  t.deepEqual(ssri.parse(integrity), {
+  t.same(ssri.parse(integrity), {
     sha512: [{
       source: integrity,
       digest: sha,
@@ -37,13 +37,13 @@ test('parses options from integrity string', t => {
       options: ['one', 'two', 'three']
     }]
   }, 'single entry parsed into full Integrity instance')
-  t.done()
+  t.end()
 })
 
 test('parses options from integrity string in strict mode', t => {
   const sha = hash(TEST_DATA, 'sha512')
   const integrity = `sha512-${sha}?one?two?three`
-  t.deepEqual(ssri.parse(integrity, { strict: true }), {
+  t.same(ssri.parse(integrity, { strict: true }), {
     sha512: [{
       source: integrity,
       digest: sha,
@@ -51,19 +51,19 @@ test('parses options from integrity string in strict mode', t => {
       options: ['one', 'two', 'three']
     }]
   }, 'single entry parsed into full Integrity instance')
-  t.done()
+  t.end()
 })
 
 test('can parse single-entry string directly into Hash', t => {
   const sha = hash(TEST_DATA, 'sha512')
   const integrity = `sha512-${sha}`
-  t.deepEqual(ssri.parse(integrity, { single: true }), {
+  t.same(ssri.parse(integrity, { single: true }), {
     source: integrity,
     digest: sha,
     algorithm: 'sha512',
     options: []
   }, 'single entry parsed into single Hash instance')
-  t.done()
+  t.end()
 })
 
 test('accepts Hash-likes as input', t => {
@@ -75,7 +75,7 @@ test('accepts Hash-likes as input', t => {
     options: ['foo']
   }
   const parsed = ssri.parse(sriLike)
-  t.deepEqual(parsed, {
+  t.same(parsed, {
     sha512: [{
       source: `sha512-${digest}?foo`,
       algorithm,
@@ -83,7 +83,7 @@ test('accepts Hash-likes as input', t => {
       options: ['foo']
     }]
   }, 'Metadata-like returned as full Integrity instance')
-  t.done()
+  t.end()
 })
 
 test('omits unsupported algos in strict mode only', t => {
@@ -140,7 +140,7 @@ test('accepts Integrity-like as input', t => {
     }]
   }
   const parsed = ssri.parse(sriLike)
-  t.deepEqual(parsed, {
+  t.same(parsed, {
     sha512: [{
       source: `sha512-${digest}?foo`,
       algorithm,
@@ -148,8 +148,8 @@ test('accepts Integrity-like as input', t => {
       options: ['foo']
     }]
   }, 'Integrity-like returned as full Integrity instance')
-  t.notEqual(parsed, sriLike, 'Objects are separate instances.')
-  t.done()
+  t.not(parsed, sriLike, 'Objects are separate instances.')
+  t.end()
 })
 
 test('parses and groups multiple-entry strings', t => {
@@ -159,7 +159,7 @@ test('parses and groups multiple-entry strings', t => {
     'sha1-OthERhaSh',
     'unknown-WoWoWoWoW'
   ]
-  t.deepEqual(ssri.parse(hashes.join(' ')), {
+  t.same(ssri.parse(hashes.join(' ')), {
     sha1: [{
       source: hashes[0],
       digest: hashes[0].split('-')[1],
@@ -184,12 +184,12 @@ test('parses and groups multiple-entry strings', t => {
       options: []
     }]
   })
-  t.done()
+  t.end()
 })
 
 test('parses any whitespace as entry separators', t => {
   const integrity = '\tsha512-foobarbaz \n\rsha384-bazbarfoo\n         \t  \t\t sha256-foo'
-  t.deepEqual(ssri.parse(integrity), {
+  t.same(ssri.parse(integrity), {
     sha512: [{
       source: 'sha512-foobarbaz',
       algorithm: 'sha512',
@@ -209,7 +209,7 @@ test('parses any whitespace as entry separators', t => {
       options: []
     }]
   }, 'whitespace around metadata skipped and trimmed')
-  t.done()
+  t.end()
 })
 
 test('discards invalid format entries', t => {
@@ -223,12 +223,12 @@ test('discards invalid format entries', t => {
     missingDigest,
     valid
   ].join(' ')).toString(), valid, 'invalid entries thrown out')
-  t.done()
+  t.end()
 })
 
 test('trims whitespace from either end', t => {
   const integrity = `      sha512-${hash(TEST_DATA, 'sha512')}    `
-  t.deepEqual(ssri.parse(integrity), {
+  t.same(ssri.parse(integrity), {
     sha512: [{
       source: integrity.trim(),
       algorithm: 'sha512',
@@ -236,7 +236,7 @@ test('trims whitespace from either end', t => {
       options: []
     }]
   }, 'whitespace is trimmed from source before parsing')
-  t.done()
+  t.end()
 })
 
 test('supports strict spec parsing', t => {
@@ -244,7 +244,7 @@ test('supports strict spec parsing', t => {
   const badAlgorithm = `sha1-${hash(TEST_DATA, 'sha1')}`
   const badBase64 = 'sha512-@#$@%#$'
   const badOpts = `${valid}?\x01\x02`
-  t.deepEqual(ssri.parse([
+  t.same(ssri.parse([
     badAlgorithm,
     badBase64,
     badOpts,
@@ -252,7 +252,7 @@ test('supports strict spec parsing', t => {
   ].join(' '), {
     strict: true
   }).toString(), valid, 'entries that fail strict check rejected')
-  t.done()
+  t.end()
 })
 
 test('does not allow weird stuff in sri', t => {
