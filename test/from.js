@@ -27,7 +27,7 @@ test('fromHex', t => {
     'sha512-3q2+7w==?a?b?c',
     'options added to entry'
   )
-  t.done()
+  t.end()
 })
 
 test('fromData', t => {
@@ -56,7 +56,7 @@ test('fromData', t => {
     ].join(' '),
     'can add opts.options to each entry'
   )
-  t.done()
+  t.end()
 })
 
 test('fromStream', t => {

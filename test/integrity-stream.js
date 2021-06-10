@@ -14,8 +14,8 @@ test('generates integrity', t => {
   stream.on('integrity', i => { integrity = i })
   stream.on('end', () => {
     t.equal(collected, 'foo', 'stream output is complete')
-    t.deepEqual(integrity, TARGET, 'matching integrity emitted')
-    t.done()
+    t.same(integrity, TARGET, 'matching integrity emitted')
+    t.end()
   })
   stream.end()
 })
@@ -28,8 +28,8 @@ test('optional algorithms option', t => {
   let integrity
   stream.on('integrity', i => { integrity = i })
   stream.on('end', () => {
-    t.deepEqual(integrity, TARGET, 'matching integrity emitted')
-    t.done()
+    t.same(integrity, TARGET, 'matching integrity emitted')
+    t.end()
   })
   stream.end()
 })
@@ -46,8 +46,8 @@ test('verification for correct data succeeds', t => {
   stream.on('integrity', i => { integrity = i })
   stream.on('end', () => {
     t.equal(collected, 'foo', 'stream output is complete')
-    t.deepEqual(integrity, TARGET, 'matching integrity emitted')
-    t.done()
+    t.same(integrity, TARGET, 'matching integrity emitted')
+    t.end()
   })
   stream.end()
 })
@@ -60,7 +60,7 @@ test('verification for wrong data fails', t => {
   stream.on('data', () => {})
   stream.on('error', err => {
     t.equal(err.code, 'EINTEGRITY', 'errors with EINTEGRITY on mismatch')
-    t.done()
+    t.end()
   })
   stream.end()
 })
