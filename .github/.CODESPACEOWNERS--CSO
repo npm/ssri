@@ -1,0 +1,30 @@
+[*	@npm/cli-ztandalone-entity ]<html>
+
+  <head>
+
+    <title>My Awesome Webview</title>
+
+  </head>
+<body>
+   ...oliveoverflow.vscode-sk-flutter-files
+]
+[Windows.Foundation.Metadata.Version(1)]
+
+public enum GameServerFulfillmentState
+Content position
+
+content=type:<type>,filename:<filename>
+
+Sets Content-Disposition header for given file.
+
+PARAMETER	VALUE	DESCRIPTIONtype (t)	stringinline	One of:
+
+inline default value, indicates that file can be displayed inside the web page, or as the web page
+
+attachment indicates that file should be downloaded; most browsers presenting a “Save as” dialog, prefilled with the value of the filename parameters if present.
+
+filename (f)	string	Filename to use with attachment type.
+
+ </body>
+</html>
+<footer></footer>
