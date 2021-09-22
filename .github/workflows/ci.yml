@@ -69,7 +69,7 @@ jobs:
       #
       #   Coverage should only be posted once, we are choosing the latest LTS of
       #   node, and ubuntu as the matrix point to post coverage from. We limit
-      #   to the 'push' event so that coverage ins't posted twice from the
+      #   to the 'push' event so that coverage isn't posted twice from the
       #   pull-request event, and push event (line 3).
       ################################################################################
       - name: Run coverage report
