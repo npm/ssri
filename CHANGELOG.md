@@ -1,5 +1,16 @@
 # Changelog
 
+## [9.0.0](https://github.com/npm/ssri/compare/v8.0.1...v9.0.0) (2022-04-05)
+
+
+### ⚠ BREAKING CHANGES
+
+* this drops support for node 8, node 10, and non-LTS versions of node 12 and node 14
+
+### Dependencies
+
+* @npmcli/template-oss@3.2.2 ([#31](https://github.com/npm/ssri/issues/31)) ([a14b37a](https://github.com/npm/ssri/commit/a14b37aaec562339e836960478d6f506f63243e0))
+
 ### [8.0.1](https://github.com/npm/ssri/compare/v8.0.0...v8.0.1) (2021-01-27)
 
 
