@@ -20,8 +20,8 @@ test('parses single-entry integrity string', t => {
       source: integrity,
       digest: sha,
       algorithm: 'sha512',
-      options: []
-    }]
+      options: [],
+    }],
   }, 'single entry parsed into full Integrity instance')
   t.end()
 })
@@ -34,8 +34,8 @@ test('parses options from integrity string', t => {
       source: integrity,
       digest: sha,
       algorithm: 'sha512',
-      options: ['one', 'two', 'three']
-    }]
+      options: ['one', 'two', 'three'],
+    }],
   }, 'single entry parsed into full Integrity instance')
   t.end()
 })
@@ -48,8 +48,8 @@ test('parses options from integrity string in strict mode', t => {
       source: integrity,
       digest: sha,
       algorithm: 'sha512',
-      options: ['one', 'two', 'three']
-    }]
+      options: ['one', 'two', 'three'],
+    }],
   }, 'single entry parsed into full Integrity instance')
   t.end()
 })
@@ -61,7 +61,7 @@ test('can parse single-entry string directly into Hash', t => {
     source: integrity,
     digest: sha,
     algorithm: 'sha512',
-    options: []
+    options: [],
   }, 'single entry parsed into single Hash instance')
   t.end()
 })
@@ -72,7 +72,7 @@ test('accepts Hash-likes as input', t => {
   const sriLike = {
     algorithm,
     digest,
-    options: ['foo']
+    options: ['foo'],
   }
   const parsed = ssri.parse(sriLike)
   t.same(parsed, {
@@ -80,52 +80,52 @@ test('accepts Hash-likes as input', t => {
       source: `sha512-${digest}?foo`,
       algorithm,
       digest,
-      options: ['foo']
-    }]
+      options: ['foo'],
+    }],
   }, 'Metadata-like returned as full Integrity instance')
   t.end()
 })
 
 test('omits unsupported algos in strict mode only', t => {
-  const hash = new Array(50).join('x')
+  const xxx = new Array(50).join('x')
 
-  t.match(ssri.parse(`foo-${hash}`, {
+  t.match(ssri.parse(`foo-${xxx}`, {
     strict: true,
-    single: true
+    single: true,
   }), {
-    source: `foo-${hash}`,
+    source: `foo-${xxx}`,
     algorithm: '',
     digest: '',
-    options: []
+    options: [],
   })
 
-  t.match(ssri.parse(`foo-${hash}`, {
+  t.match(ssri.parse(`foo-${xxx}`, {
     strict: false,
-    single: true
+    single: true,
   }), {
-    source: `foo-${hash}`,
+    source: `foo-${xxx}`,
     algorithm: 'foo',
-    digest: hash,
-    options: []
+    digest: xxx,
+    options: [],
   })
 
-  t.match(ssri.parse(`sha512-${hash}`, {
+  t.match(ssri.parse(`sha512-${xxx}`, {
     strict: true,
-    single: true
+    single: true,
   }), {
-    source: `sha512-${hash}`,
+    source: `sha512-${xxx}`,
     algorithm: 'sha512',
-    digest: hash,
-    options: []
+    digest: xxx,
+    options: [],
   })
 
   t.end()
 })
 
 test('use " " as sep when opts.sep is falsey', t => {
-  const hash = ssri.parse('yum-somehash foo-barbaz')
-  t.equal(hash.toString({ sep: false }), 'yum-somehash foo-barbaz')
-  t.equal(hash.toString({ sep: '\t' }), 'yum-somehash\tfoo-barbaz')
+  const parsed = ssri.parse('yum-somehash foo-barbaz')
+  t.equal(parsed.toString({ sep: false }), 'yum-somehash foo-barbaz')
+  t.equal(parsed.toString({ sep: '\t' }), 'yum-somehash\tfoo-barbaz')
   t.end()
 })
 
@@ -136,8 +136,8 @@ test('accepts Integrity-like as input', t => {
     sha512: [{
       algorithm,
       digest,
-      options: ['foo']
-    }]
+      options: ['foo'],
+    }],
   }
   const parsed = ssri.parse(sriLike)
   t.same(parsed, {
@@ -145,8 +145,8 @@ test('accepts Integrity-like as input', t => {
       source: `sha512-${digest}?foo`,
       algorithm,
       digest,
-      options: ['foo']
-    }]
+      options: ['foo'],
+    }],
   }, 'Integrity-like returned as full Integrity instance')
   t.not(parsed, sriLike, 'Objects are separate instances.')
   t.end()
@@ -157,32 +157,32 @@ test('parses and groups multiple-entry strings', t => {
     `sha1-${hash(TEST_DATA, 'sha1')}`,
     `sha256-${hash(TEST_DATA, 'sha256')}`,
     'sha1-OthERhaSh',
-    'unknown-WoWoWoWoW'
+    'unknown-WoWoWoWoW',
   ]
   t.same(ssri.parse(hashes.join(' ')), {
     sha1: [{
       source: hashes[0],
       digest: hashes[0].split('-')[1],
       algorithm: 'sha1',
-      options: []
+      options: [],
     }, {
       source: hashes[2],
       digest: hashes[2].split('-')[1],
       algorithm: 'sha1',
-      options: []
+      options: [],
     }],
     sha256: [{
       source: hashes[1],
       digest: hashes[1].split('-')[1],
       algorithm: 'sha256',
-      options: []
+      options: [],
     }],
     unknown: [{
       source: hashes[3],
       digest: hashes[3].split('-')[1],
       algorithm: 'unknown',
-      options: []
-    }]
+      options: [],
+    }],
   })
   t.end()
 })
@@ -194,20 +194,20 @@ test('parses any whitespace as entry separators', t => {
       source: 'sha512-foobarbaz',
       algorithm: 'sha512',
       digest: 'foobarbaz',
-      options: []
+      options: [],
     }],
     sha384: [{
       source: 'sha384-bazbarfoo',
       algorithm: 'sha384',
       digest: 'bazbarfoo',
-      options: []
+      options: [],
     }],
     sha256: [{
       source: 'sha256-foo',
       algorithm: 'sha256',
       digest: 'foo',
-      options: []
-    }]
+      options: [],
+    }],
   }, 'whitespace around metadata skipped and trimmed')
   t.end()
 })
@@ -221,7 +221,7 @@ test('discards invalid format entries', t => {
     missingDash,
     missingAlgorithm,
     missingDigest,
-    valid
+    valid,
   ].join(' ')).toString(), valid, 'invalid entries thrown out')
   t.end()
 })
@@ -233,8 +233,8 @@ test('trims whitespace from either end', t => {
       source: integrity.trim(),
       algorithm: 'sha512',
       digest: hash(TEST_DATA, 'sha512'),
-      options: []
-    }]
+      options: [],
+    }],
   }, 'whitespace is trimmed from source before parsing')
   t.end()
 })
@@ -248,9 +248,9 @@ test('supports strict spec parsing', t => {
     badAlgorithm,
     badBase64,
     badOpts,
-    valid
+    valid,
   ].join(' '), {
-    strict: true
+    strict: true,
   }).toString(), valid, 'entries that fail strict check rejected')
   t.end()
 })

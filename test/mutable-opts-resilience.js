@@ -10,7 +10,7 @@ t.test('support adding bad integrity later', t => {
   const stream = ssri.integrityStream(opts)
   opts.integrity = ssri.parse('sha512-deepbeets')
   return t.rejects(stream.end(data).collect(), {
-    code: 'EINTEGRITY'
+    code: 'EINTEGRITY',
   })
 })
 
@@ -19,7 +19,7 @@ t.test('support adding bad integrity string later', t => {
   const stream = ssri.integrityStream(opts)
   opts.integrity = 'sha512-deepbeets'
   return t.rejects(stream.end(data).collect(), {
-    code: 'EINTEGRITY'
+    code: 'EINTEGRITY',
   })
 })
 
@@ -28,7 +28,7 @@ t.test('support adding bad size later', t => {
   const stream = ssri.integrityStream(opts)
   opts.size = 2
   return t.rejects(stream.end(data).collect(), {
-    code: 'EBADSIZE'
+    code: 'EBADSIZE',
   })
 })
 
