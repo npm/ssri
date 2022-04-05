@@ -9,9 +9,13 @@ test('generates integrity', t => {
   const stream = ssri.integrityStream()
   stream.write('foo')
   let collected = ''
-  stream.on('data', d => { collected += d.toString() })
+  stream.on('data', d => {
+    collected += d.toString()
+  })
   let integrity
-  stream.on('integrity', i => { integrity = i })
+  stream.on('integrity', i => {
+    integrity = i
+  })
   stream.on('end', () => {
     t.equal(collected, 'foo', 'stream output is complete')
     t.same(integrity, TARGET, 'matching integrity emitted')
@@ -26,7 +30,9 @@ test('optional algorithms option', t => {
   stream.write('foo')
   stream.on('data', () => {})
   let integrity
-  stream.on('integrity', i => { integrity = i })
+  stream.on('integrity', i => {
+    integrity = i
+  })
   stream.on('end', () => {
     t.same(integrity, TARGET, 'matching integrity emitted')
     t.end()
@@ -37,13 +43,17 @@ test('optional algorithms option', t => {
 test('verification for correct data succeeds', t => {
   const TARGET = ssri.fromData('foo')
   const stream = ssri.integrityStream({
-    integrity: TARGET
+    integrity: TARGET,
   })
   stream.write('foo')
   let collected = ''
-  stream.on('data', d => { collected += d.toString() })
+  stream.on('data', d => {
+    collected += d.toString()
+  })
   let integrity
-  stream.on('integrity', i => { integrity = i })
+  stream.on('integrity', i => {
+    integrity = i
+  })
   stream.on('end', () => {
     t.equal(collected, 'foo', 'stream output is complete')
     t.same(integrity, TARGET, 'matching integrity emitted')
@@ -54,7 +64,7 @@ test('verification for correct data succeeds', t => {
 
 test('verification for wrong data fails', t => {
   const stream = ssri.integrityStream({
-    integrity: ssri.fromData('bar')
+    integrity: ssri.fromData('bar'),
   })
   stream.write('foo')
   stream.on('data', () => {})

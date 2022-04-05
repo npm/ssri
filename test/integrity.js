@@ -7,6 +7,7 @@ const test = require('tap').test
 const ssri = require('..')
 
 test('toString()', t => {
+  /* eslint-disable-next-line max-len */
   const sri = ssri.parse('sha1-eUN/Xt2hP5wGabl43XqQZt0gWfE= sha256-Qhx213Vjr6GRSEawEL0WTzlb00whAuXpngy5zxc8HYc=')
   t.equal(
     sri.toString(),
@@ -56,7 +57,7 @@ test('concat()', t => {
   t.equal(
     sri.concat({
       sha384: [{ digest: 'bar', algorithm: 'sha384' }],
-      sha1: [{ digest: 'baz', algorithm: 'sha1' }]
+      sha1: [{ digest: 'baz', algorithm: 'sha1' }],
     }).toString(),
     'sha512-foo sha384-bar sha1-baz',
     'concatenates with an Integrity-like'
@@ -72,11 +73,13 @@ test('concat()', t => {
     'sha512-foo sha512-quux sha1-bar sha1-baz',
     'preserves relative order for algorithms between different concatenations'
   )
+  /* eslint-disable-next-line max-len */
   const strictSri = ssri.parse('sha512-WrLorGiX4iEWOOOaJSiCrmDIamA47exH+Bz7tVwIPb4sCU8w4iNqGCqYuspMMeU5pgz/sU7koP5u8W3RCUojGw==')
   t.equal(
     strictSri.concat('sha1-eUN/Xt2hP5wGabl43XqQZt0gWfE=', {
-      strict: true
+      strict: true,
     }).toString(),
+    /* eslint-disable-next-line max-len */
     'sha512-WrLorGiX4iEWOOOaJSiCrmDIamA47exH+Bz7tVwIPb4sCU8w4iNqGCqYuspMMeU5pgz/sU7koP5u8W3RCUojGw==',
     'accepts strict mode option'
   )
@@ -87,23 +90,23 @@ test('match()', t => {
   const sri = ssri.parse('sha1-foo sha512-bar')
   t.match(sri.match('sha1-foo'), {
     algorithm: 'sha1',
-    digest: 'foo'
+    digest: 'foo',
   }, 'returns the matching hash')
   t.match(sri.match(ssri.parse('sha1-foo')), {
     algorithm: 'sha1',
-    digest: 'foo'
+    digest: 'foo',
   }, 'accepts other Integrity objects')
   t.match(sri.match(ssri.parse('sha1-foo')), {
     algorithm: 'sha1',
-    digest: 'foo'
+    digest: 'foo',
   }, 'accepts other Hash objects')
   t.match(sri.match({ digest: 'foo', algorithm: 'sha1' }), {
     algorithm: 'sha1',
-    digest: 'foo'
+    digest: 'foo',
   }, 'accepts Hash-like objects')
   t.match(sri.match('sha1-bar sha512-bar'), {
     algorithm: 'sha512',
-    digest: 'bar'
+    digest: 'bar',
   }, 'returns the strongest match')
   t.notOk(sri.match('sha512-foo'), 'falsy when match fails')
   t.notOk(sri.match('sha384-foo'), 'falsy when match fails')
@@ -120,7 +123,7 @@ test('pickAlgorithm()', t => {
   )
   t.equal(
     sri.pickAlgorithm({
-      pickAlgorithm: (a, b) => 'sha384'
+      pickAlgorithm: (a, b) => 'sha384',
     }),
     'sha384',
     'custom pickAlgorithm function accepted'

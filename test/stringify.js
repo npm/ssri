@@ -17,15 +17,15 @@ test('serializes Integrity-likes', t => {
     sha512: [{
       digest: 'foo',
       algorithm: 'sha512',
-      options: ['ayy', 'woo']
+      options: ['ayy', 'woo'],
     }, {
       digest: 'bar',
-      algorithm: 'sha512'
+      algorithm: 'sha512',
     }],
     whirlpool: [{
       digest: 'wut',
-      algorithm: 'whirlpool'
-    }]
+      algorithm: 'whirlpool',
+    }],
   }
   t.equal(
     ssri.stringify(sriLike),
@@ -38,7 +38,7 @@ test('serializes Integrity-likes', t => {
 test('serializes Hash-likes', t => {
   const sriLike = {
     digest: 'foo',
-    algorithm: 'sha512'
+    algorithm: 'sha512',
   }
   t.equal(
     ssri.stringify(sriLike),
@@ -62,11 +62,11 @@ test('accepts a separator opt', t => {
   const sriLike = {
     sha512: [{
       algorithm: 'sha512',
-      digest: 'foo'
+      digest: 'foo',
     }, {
       algorithm: 'sha512',
-      digest: 'bar'
-    }]
+      digest: 'bar',
+    }],
   }
   t.equal(
     ssri.stringify(sriLike, { sep: '\n' }),
@@ -84,23 +84,23 @@ test('support strict serialization', t => {
     // only sha256, sha384, and sha512 are allowed by the spec
     sha1: [{
       algorithm: 'sha1',
-      digest: 'feh'
+      digest: 'feh',
     }],
     sha256: [{
       algorithm: 'sha256',
       // Must be valid base64
-      digest: 'wut!!!??!!??!'
+      digest: 'wut!!!??!!??!',
     }, {
       algorithm: 'sha256',
       digest: hash(TEST_DATA, 'sha256'),
-      options: ['foo']
+      options: ['foo'],
     }],
     sha512: [{
       algorithm: 'sha512',
       digest: hash(TEST_DATA, 'sha512'),
       // Options must use VCHAR
-      options: ['\x01']
-    }]
+      options: ['\x01'],
+    }],
   }
   t.equal(
     ssri.stringify(sriLike, { strict: true }),
@@ -108,7 +108,9 @@ test('support strict serialization', t => {
     'entries that do not conform to strict spec interpretation removed'
   )
   t.equal(
+    /* eslint-disable-next-line max-len */
     ssri.stringify('sha512-WrLorGiX4iEWOOOaJSiCrmDIamA47exH+Bz7tVwIPb4sCU8w4iNqGCqYuspMMeU5pgz/sU7koP5u8W3RCUojGw== sha256-Qhx213Vjr6GRSEawEL0WTzlb00whAuXpngy5zxc8HYc=', { sep: ' \r|\n\t', strict: true }),
+    /* eslint-disable-next-line max-len */
     'sha512-WrLorGiX4iEWOOOaJSiCrmDIamA47exH+Bz7tVwIPb4sCU8w4iNqGCqYuspMMeU5pgz/sU7koP5u8W3RCUojGw== \r \n\tsha256-Qhx213Vjr6GRSEawEL0WTzlb00whAuXpngy5zxc8HYc=',
     'strict mode replaces non-whitespace characters in separator with space'
   )
