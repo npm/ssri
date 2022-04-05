@@ -51,7 +51,7 @@
   "devDependencies": {
     "@npmcli/eslint-config": "^3.0.1",
     "@npmcli/template-oss": "3.2.2",
-    "tap": "^15.0.9"
+    "tap": "^16.0.1"
   },
   "engines": {
     "node": "^12.13.0 || ^14.15.0 || >=16.0.0"
