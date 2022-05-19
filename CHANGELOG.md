@@ -1,5 +1,12 @@
 # Changelog
 
+### [9.0.1](https://github.com/npm/ssri/compare/v9.0.0...v9.0.1) (2022-05-19)
+
+
+### Bug Fixes
+
+* store emitted events and re-emit them for late listeners ([#39](https://github.com/npm/ssri/issues/39)) ([c5421f1](https://github.com/npm/ssri/commit/c5421f1fb4f684b941e4ea1abff83b7048a48d61))
+
 ## [9.0.0](https://github.com/npm/ssri/compare/v8.0.1...v9.0.0) (2022-04-05)
 
 
