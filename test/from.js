@@ -59,40 +59,32 @@ test('fromData', t => {
   t.end()
 })
 
-test('fromStream', t => {
+test('fromStream', async t => {
   let streamEnded
   const stream = fileStream().on('end', () => {
     streamEnded = true
   })
-  return ssri.fromStream(stream).then(integrity => {
-    t.equal(
-      integrity.toString(),
-      `sha512-${hash(TEST_DATA, 'sha512')}`,
-      'generates sha512 from a stream'
-    )
-    t.ok(streamEnded, 'source stream ended')
-    return ssri.fromStream(fileStream(), {
-      algorithms: ['sha256', 'sha384'],
-    })
-  }).then(integrity => {
-    t.equal(
-      integrity.toString(), [
-        `sha256-${hash(TEST_DATA, 'sha256')}`,
-        `sha384-${hash(TEST_DATA, 'sha384')}`,
-      ].join(' '),
-      'can generate multiple metadata entries with opts.algorithms'
-    )
-    return ssri.fromStream(fileStream(), {
-      algorithms: ['sha256', 'sha384'],
-      options: ['foo', 'bar'],
-    })
-  }).then(integrity => {
-    t.equal(
-      integrity.toString(), [
-        `sha256-${hash(TEST_DATA, 'sha256')}?foo?bar`,
-        `sha384-${hash(TEST_DATA, 'sha384')}?foo?bar`,
-      ].join(' '),
-      'can add opts.options to each entry'
-    )
+  const noAlgs = await ssri.fromStream(stream)
+  t.equal(
+    noAlgs.toString(),
+    `sha512-${hash(TEST_DATA, 'sha512')}`,
+    'generates sha512 from a stream'
+  )
+  t.ok(streamEnded, 'source stream ended')
+  const goodAlgs = await ssri.fromStream(fileStream(), {
+    algorithms: ['sha256', 'sha384'],
   })
+  t.equal(
+    goodAlgs.toString(),
+    [`sha256-${hash(TEST_DATA, 'sha256')}`, `sha384-${hash(TEST_DATA, 'sha384')}`].join(' '),
+    'can generate multiple metadata entries with opts.algorithms'
+  )
+  const badAlgs = await ssri.fromStream(fileStream(), {
+    algorithms: ['sha256', 'sha384'],
+    options: ['foo', 'bar'],
+  })
+  t.equal(badAlgs.toString(), [
+    `sha256-${hash(TEST_DATA, 'sha256')}?foo?bar`,
+    `sha384-${hash(TEST_DATA, 'sha384')}?foo?bar`,
+  ].join(' '), 'can add opts.options to each entry')
 })

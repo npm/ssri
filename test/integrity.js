@@ -1,7 +1,5 @@
 'use strict'
 
-const Buffer = require('safe-buffer').Buffer
-
 const test = require('tap').test
 
 const ssri = require('..')
