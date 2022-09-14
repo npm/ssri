@@ -108,6 +108,7 @@ test('match()', t => {
   }, 'returns the strongest match')
   t.notOk(sri.match('sha512-foo'), 'falsy when match fails')
   t.notOk(sri.match('sha384-foo'), 'falsy when match fails')
+  t.notOk(sri.match(null), 'falsy when integrity is null')
   t.end()
 })
 
