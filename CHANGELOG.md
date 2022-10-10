@@ -1,5 +1,19 @@
 # Changelog
 
+## [10.0.0](https://github.com/npm/ssri/compare/v9.0.1...v10.0.0) (2022-10-10)
+
+### ⚠️ BREAKING CHANGES
+
+* `ssri` is now compatible with the following semver range for node: `^14.17.0 || ^16.13.0 || >=18.0.0`
+
+### Features
+
+* [`3de0c45`](https://github.com/npm/ssri/commit/3de0c4502db78dbd3595207511362f65191793a8) [#52](https://github.com/npm/ssri/pull/52) postinstall for dependabot template-oss PR (@lukekarrys)
+
+### Bug Fixes
+
+* [`2e876d1`](https://github.com/npm/ssri/commit/2e876d12a67f2778c382dd29edc5ecc150279975) [#48](https://github.com/npm/ssri/pull/48) properly handle missing algorithm type (#48) (@ahmedwelhakim)
+
 ### [9.0.1](https://github.com/npm/ssri/compare/v9.0.0...v9.0.1) (2022-05-19)
 
 
