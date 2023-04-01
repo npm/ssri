@@ -160,6 +160,9 @@ test('checkStream', t => {
     })
   }).then(res => {
     t.same(res, meta, 'Accepts Hash-like SRI')
+    return ssri.checkStream(fileStream(), `sha512-${hash(TEST_DATA, 'sha512')}`, { single: true })
+  }).then(res => {
+    t.same(res, meta, 'Process successfully with single option')
     return ssri.checkStream(
       fileStream(),
       `sha512-nope sha512-${hash(TEST_DATA, 'sha512')}`
