@@ -1,5 +1,13 @@
 # Changelog
 
+## [10.0.2](https://github.com/npm/ssri/compare/v10.0.1...v10.0.2) (2023-04-03)
+
+### Bug Fixes
+
+* [`8e80eca`](https://github.com/npm/ssri/commit/8e80eca497bd7f6a714498df6ad64f3faef3bc5e) [#74](https://github.com/npm/ssri/pull/74) move from symbols to private methods (#74) (@wraithgar)
+* [`a316b12`](https://github.com/npm/ssri/commit/a316b12e0c177757528c643ac28ce8b2425fcb3f) [#75](https://github.com/npm/ssri/pull/75) faster toString for integrity (#75) (@H4ad)
+* [`6e6877d`](https://github.com/npm/ssri/commit/6e6877d55cf608ea9b80b19a389f7e1775421e24) [#72](https://github.com/npm/ssri/pull/72) remove spread of defaultOpts (#72) (@H4ad)
+
 ## [10.0.1](https://github.com/npm/ssri/compare/v10.0.0...v10.0.1) (2022-12-07)
 
 ### Dependencies
