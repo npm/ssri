@@ -13,8 +13,8 @@ function hash (data, algorithm) {
 }
 
 test('hashes should match when valid', t => {
-  const sha = hash(TEST_DATA, 'sha512')
-  const integrity = `sha512-${sha}`
+  const integrity = `sha512-${hash(TEST_DATA, 'sha512')}`
+  const otherIntegrity = `sha512-${hash('mismatch', 'sha512')}`
   const parsed = ssri.parse(integrity, { single: true })
   t.same(
     parsed.match(integrity, { single: true }),
@@ -46,6 +46,11 @@ test('hashes should match when valid', t => {
     parsed.match(null),
     false,
     'null integrity just returns false'
+  )
+  t.same(
+    parsed.match(otherIntegrity),
+    false,
+    'should not match with a totally different integrity'
   )
   t.end()
 })
