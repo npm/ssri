@@ -1,5 +1,14 @@
 # Changelog
 
+## [10.0.3](https://github.com/npm/ssri/compare/v10.0.2...v10.0.3) (2023-04-11)
+
+### Bug Fixes
+
+* [`7fef846`](https://github.com/npm/ssri/commit/7fef8463d4218684302d0a832dd4364e4d605d79) [#79](https://github.com/npm/ssri/pull/79) optimize adding this.algorithm to algorithms list (@wraithgar)
+* [`d90f674`](https://github.com/npm/ssri/commit/d90f674cd515e205ab00f8a264e258cd8b2bac0b) [#79](https://github.com/npm/ssri/pull/79) prevent DEFAULT_ALGORITHM mutation (@wraithgar)
+* [`4e94d15`](https://github.com/npm/ssri/commit/4e94d15dd9ec5c4b1f5d9399acef11a63b322336) [#79](https://github.com/npm/ssri/pull/79) Integrity#match prioritizes overlapping hashes (@wraithgar)
+* [`dce3dab`](https://github.com/npm/ssri/commit/dce3dab846124c1ef91cb7c646d98dbb08482055) [#79](https://github.com/npm/ssri/pull/79) faster stream verification (@H4ad)
+
 ## [10.0.2](https://github.com/npm/ssri/compare/v10.0.1...v10.0.2) (2023-04-03)
 
 ### Bug Fixes
