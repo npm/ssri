@@ -1,5 +1,11 @@
 # Changelog
 
+## [10.0.4](https://github.com/npm/ssri/compare/v10.0.3...v10.0.4) (2023-04-26)
+
+### Dependencies
+
+* [`152e2bc`](https://github.com/npm/ssri/commit/152e2bce4362d9a2376fcc90329e184e2bb7631a) [#78](https://github.com/npm/ssri/pull/78) bump minipass from 4.2.7 to 5.0.0 (#78)
+
 ## [10.0.3](https://github.com/npm/ssri/compare/v10.0.2...v10.0.3) (2023-04-11)
 
 ### Bug Fixes
