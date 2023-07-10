@@ -47,7 +47,7 @@
   "author": "GitHub Inc.",
   "license": "ISC",
   "dependencies": {
-    "minipass": "^5.0.0"
+    "minipass": "^7.0.1"
   },
   "devDependencies": {
     "@npmcli/eslint-config": "^4.0.0",
