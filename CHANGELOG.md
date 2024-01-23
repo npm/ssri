@@ -1,5 +1,18 @@
 # Changelog
 
+## [10.0.6](https://github.com/npm/ssri/compare/v10.0.5...v10.0.6) (2023-12-07)
+
+### Chores
+
+* [`a033115`](https://github.com/npm/ssri/commit/a033115d0ad2273590300451254a8164ac934008) [#121](https://github.com/npm/ssri/pull/121) postinstall for dependabot template-oss PR (@lukekarrys)
+* [`c479b90`](https://github.com/npm/ssri/commit/c479b9060e54c427c93c43636460d2a9a71eefdf) [#121](https://github.com/npm/ssri/pull/121) bump @npmcli/template-oss from 4.21.1 to 4.21.3 (@dependabot[bot])
+* [`8380827`](https://github.com/npm/ssri/commit/8380827acecb50bea4c6334a9ebc2c0ca13bd7fb) [#117](https://github.com/npm/ssri/pull/117) postinstall for dependabot template-oss PR (@lukekarrys)
+* [`d7b6c6b`](https://github.com/npm/ssri/commit/d7b6c6b6db4f2d0a6c78c3a44a3f26dc510e6184) [#117](https://github.com/npm/ssri/pull/117) bump @npmcli/template-oss from 4.19.0 to 4.21.1 (@dependabot[bot])
+* [`1428d44`](https://github.com/npm/ssri/commit/1428d442e0c79e43ef21ad41e03e7152e6fea7c9) [#97](https://github.com/npm/ssri/pull/97) postinstall for dependabot template-oss PR (@lukekarrys)
+* [`8e46403`](https://github.com/npm/ssri/commit/8e46403b8ab1fba7694031b46cfb5fc77f336bd0) [#97](https://github.com/npm/ssri/pull/97) bump @npmcli/template-oss from 4.18.1 to 4.19.0 (@dependabot[bot])
+* [`5ab7fdb`](https://github.com/npm/ssri/commit/5ab7fdb5bfd2e3e0d9b037651a26bff0bafcc2ec) [#96](https://github.com/npm/ssri/pull/96) postinstall for dependabot template-oss PR (@lukekarrys)
+* [`a64937a`](https://github.com/npm/ssri/commit/a64937a78dbf69b779a75ad7e941353a08186e4e) [#96](https://github.com/npm/ssri/pull/96) bump @npmcli/template-oss from 4.18.0 to 4.18.1 (@dependabot[bot])
+
 ## [10.0.5](https://github.com/npm/ssri/compare/v10.0.4...v10.0.5) (2023-08-14)
 
 ### Dependencies
