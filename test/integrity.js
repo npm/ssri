@@ -122,7 +122,7 @@ test('pickAlgorithm()', t => {
   )
   t.equal(
     sri.pickAlgorithm({
-      pickAlgorithm: (a, b) => 'sha384',
+      pickAlgorithm: () => 'sha384',
     }),
     'sha384',
     'custom pickAlgorithm function accepted'
