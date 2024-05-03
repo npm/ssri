@@ -111,7 +111,7 @@ test('checkData', t => {
       `sha1-${hash(TEST_DATA, 'sha1')}`,
       `sha512-${hash(TEST_DATA, 'sha512')}`,
     ].join(' '), {
-      pickAlgorithm: (a, b) => {
+      pickAlgorithm: () => {
         return false
       },
     }),
