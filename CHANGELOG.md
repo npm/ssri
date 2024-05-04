@@ -1,5 +1,17 @@
 # Changelog
 
+## [10.0.6](https://github.com/npm/ssri/compare/v10.0.5...v10.0.6) (2024-05-04)
+
+### Bug Fixes
+
+* [`f3773e2`](https://github.com/npm/ssri/commit/f3773e21f966259ab3928dc2a9058fa3d3d82a55) [#127](https://github.com/npm/ssri/pull/127) linting: no-unused-vars (@lukekarrys)
+
+### Chores
+
+* [`55e7dfb`](https://github.com/npm/ssri/commit/55e7dfbe3fae8c1d520a4d0c90ac163dac6aa9b1) [#127](https://github.com/npm/ssri/pull/127) bump @npmcli/template-oss to 4.22.0 (@lukekarrys)
+* [`96d1795`](https://github.com/npm/ssri/commit/96d1795b9339c9c161bf3ca46cc4d3729a8e8aab) [#127](https://github.com/npm/ssri/pull/127) postinstall for dependabot template-oss PR (@lukekarrys)
+* [`10d5e8a`](https://github.com/npm/ssri/commit/10d5e8ae4916895752bd6a1a704f275a1c2f4083) [#125](https://github.com/npm/ssri/pull/125) bump @npmcli/template-oss from 4.21.3 to 4.21.4 (@dependabot[bot])
+
 ## [10.0.5](https://github.com/npm/ssri/compare/v10.0.4...v10.0.5) (2023-08-14)
 
 ### Dependencies
