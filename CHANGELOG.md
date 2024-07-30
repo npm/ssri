@@ -1,5 +1,19 @@
 # Changelog
 
+## [11.0.0](https://github.com/npm/ssri/compare/v10.0.6...v11.0.0) (2024-07-30)
+
+### ⚠️ BREAKING CHANGES
+
+* `ssri` is now compatible with the following semver range for node: `^16.13.0 || >=18.0.0`
+
+### Bug Fixes
+
+* [`83b46d8`](https://github.com/npm/ssri/commit/83b46d87582ba5ca7c58fc92025c1fd472b34bb5) [#137](https://github.com/npm/ssri/pull/137) Address breaking engine change in dependency (@hashtagchris)
+
+### Chores
+
+* [`0fa3964`](https://github.com/npm/ssri/commit/0fa39645b10dd39680c708f325b90a52b35f0d30) [#137](https://github.com/npm/ssri/pull/137) template-oss-apply (@hashtagchris)
+
 ## [10.0.6](https://github.com/npm/ssri/compare/v10.0.5...v10.0.6) (2024-05-04)
 
 ### Bug Fixes
