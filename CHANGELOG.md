@@ -1,5 +1,16 @@
 # Changelog
 
+## [11.0.0](https://github.com/npm/ssri/compare/v10.0.6...v11.0.0) (2024-09-03)
+### ⚠️ BREAKING CHANGES
+* `ssri` is now compatible with the following semver range for node: `^16.14.0 || >=18.0.0`
+### Bug Fixes
+* [`29a6e2c`](https://github.com/npm/ssri/commit/29a6e2c2e0d919f595ab1d9e0b685e9627f7ec41) Address breaking engine change in dependency (@hashtagchris)
+### Chores
+* [`db4219f`](https://github.com/npm/ssri/commit/db4219f28ab4576c32cde8ef008f2fc408b7f577) bump @npmcli/eslint-config from 4.0.5 to 5.0.0 (@dependabot[bot])
+* [`f2dd012`](https://github.com/npm/ssri/commit/f2dd0125e4381f54ce97d4e03e57c21b3ff0aa3d) template-oss-apply (@hashtagchris)
+* [`f2a2a9d`](https://github.com/npm/ssri/commit/f2a2a9d09fd8956180b8aaf30b69481f61da0e2d) postinstall for dependabot template-oss PR (@hashtagchris)
+* [`4508f71`](https://github.com/npm/ssri/commit/4508f71d8a873a2d3cee9369fa6117530bee6b6c) bump @npmcli/template-oss from 4.22.0 to 4.23.3 (@dependabot[bot])
+
 ## [10.0.6](https://github.com/npm/ssri/compare/v10.0.5...v10.0.6) (2024-05-04)
 
 ### Bug Fixes
