@@ -1,5 +1,13 @@
 # Changelog
 
+## [12.0.0](https://github.com/npm/ssri/compare/v11.0.0...v12.0.0) (2024-09-24)
+### ⚠️ BREAKING CHANGES
+* `ssri` now supports node `^18.17.0 || >=20.5.0`
+### Bug Fixes
+* [`b7a3f9a`](https://github.com/npm/ssri/commit/b7a3f9ad357ab1b463808f49903ed65eac1b9663) [#141](https://github.com/npm/ssri/pull/141) align to npm 10 node engine range (@hashtagchris)
+### Chores
+* [`f8121e9`](https://github.com/npm/ssri/commit/f8121e9e5ea3121b4cf3a59767472ae382373f3f) [#141](https://github.com/npm/ssri/pull/141) run template-oss-apply (@hashtagchris)
+
 ## [11.0.0](https://github.com/npm/ssri/compare/v10.0.6...v11.0.0) (2024-09-03)
 ### ⚠️ BREAKING CHANGES
 * `ssri` is now compatible with the following semver range for node: `^16.14.0 || >=18.0.0`
