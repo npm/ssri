@@ -1,5 +1,15 @@
 # Changelog
 
+## [13.0.0](https://github.com/npm/ssri/compare/v12.0.0...v13.0.0) (2025-10-22)
+### ⚠️ BREAKING CHANGES
+* `ssri` now supports node `^20.17.0 || >=22.9.0`
+### Bug Fixes
+* [`46a2520`](https://github.com/npm/ssri/commit/46a2520214e47948c951914caba86d1f929b78eb) [#155](https://github.com/npm/ssri/pull/155) align to npm 11 node engine range (#155) (@owlstronaut)
+* [`8f0bbf2`](https://github.com/npm/ssri/commit/8f0bbf2717238220203091e31d2cb91090199cb4) [#151](https://github.com/npm/ssri/pull/151) improve `SRI_REGEX` (#151) (@ericcornelissen)
+### Chores
+* [`79e0018`](https://github.com/npm/ssri/commit/79e001894155d729847f3c8611d9f0758f699b6b) [#146](https://github.com/npm/ssri/pull/146) postinstall workflow updates (#146) (@owlstronaut)
+* [`89b775a`](https://github.com/npm/ssri/commit/89b775a9cf3ce335aa3ab60b05c5c5b97768a681) [#154](https://github.com/npm/ssri/pull/154) bump @npmcli/template-oss from 4.26.0 to 4.27.1 (#154) (@dependabot[bot], @npm-cli-bot)
+
 ## [12.0.0](https://github.com/npm/ssri/compare/v11.0.0...v12.0.0) (2024-09-24)
 ### ⚠️ BREAKING CHANGES
 * `ssri` now supports node `^18.17.0 || >=20.5.0`
