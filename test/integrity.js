@@ -1,58 +1,57 @@
 'use strict'
 
-const test = require('tap').test
+const { test } = require('node:test')
+const assert = require('node:assert')
 
 const ssri = require('..')
 
-test('toString()', t => {
+test('toString()', () => {
   /* eslint-disable-next-line max-len */
   const sri = ssri.parse('sha1-eUN/Xt2hP5wGabl43XqQZt0gWfE= sha256-Qhx213Vjr6GRSEawEL0WTzlb00whAuXpngy5zxc8HYc=')
-  t.equal(
+  assert.strictEqual(
     sri.toString(),
     'sha1-eUN/Xt2hP5wGabl43XqQZt0gWfE= sha256-Qhx213Vjr6GRSEawEL0WTzlb00whAuXpngy5zxc8HYc=',
     'integrity objects from ssri.parse() can use toString()'
   )
-  t.equal(
+  assert.strictEqual(
     sri.toString({ strict: true }),
     'sha256-Qhx213Vjr6GRSEawEL0WTzlb00whAuXpngy5zxc8HYc=',
     'accepts strict mode option'
   )
-  t.equal(
+  assert.strictEqual(
     sri.toString({ sep: '\n' }),
     'sha1-eUN/Xt2hP5wGabl43XqQZt0gWfE=\nsha256-Qhx213Vjr6GRSEawEL0WTzlb00whAuXpngy5zxc8HYc=',
     'accepts separator option'
   )
-  t.end()
 })
 
-test('toJSON()', t => {
+test('toJSON()', () => {
   const sri = ssri.parse('sha512-foo sha256-bar!')
-  t.equal(
+  assert.strictEqual(
     sri.toJSON(),
     'sha512-foo sha256-bar!',
     'integrity objects from ssri.parse() can use toJSON()'
   )
-  t.equal(
+  assert.strictEqual(
     sri.sha512[0].toJSON(),
     'sha512-foo',
     'hash objects should toJSON also'
   )
-  t.end()
 })
 
-test('concat()', t => {
+test('concat()', () => {
   const sri = ssri.parse('sha512-foo')
-  t.equal(
+  assert.strictEqual(
     sri.concat('sha512-bar').toString(),
     'sha512-foo sha512-bar',
     'concatenates with a string'
   )
-  t.equal(
+  assert.strictEqual(
     sri.concat({ digest: 'bar', algorithm: 'sha384' }).toString(),
     'sha512-foo sha384-bar',
     'concatenates with an Hash-like'
   )
-  t.equal(
+  assert.strictEqual(
     sri.concat({
       sha384: [{ digest: 'bar', algorithm: 'sha384' }],
       sha1: [{ digest: 'baz', algorithm: 'sha1' }],
@@ -60,7 +59,7 @@ test('concat()', t => {
     'sha512-foo sha384-bar sha1-baz',
     'concatenates with an Integrity-like'
   )
-  t.equal(
+  assert.strictEqual(
     sri.concat(
       { digest: 'bar', algorithm: 'sha1' }
     ).concat(
@@ -73,7 +72,7 @@ test('concat()', t => {
   )
   /* eslint-disable-next-line max-len */
   const strictSri = ssri.parse('sha512-WrLorGiX4iEWOOOaJSiCrmDIamA47exH+Bz7tVwIPb4sCU8w4iNqGCqYuspMMeU5pgz/sU7koP5u8W3RCUojGw==')
-  t.equal(
+  assert.strictEqual(
     strictSri.concat('sha1-eUN/Xt2hP5wGabl43XqQZt0gWfE=', {
       strict: true,
     }).toString(),
@@ -81,78 +80,72 @@ test('concat()', t => {
     'sha512-WrLorGiX4iEWOOOaJSiCrmDIamA47exH+Bz7tVwIPb4sCU8w4iNqGCqYuspMMeU5pgz/sU7koP5u8W3RCUojGw==',
     'accepts strict mode option'
   )
-  t.end()
 })
 
-test('match()', t => {
+test('match()', () => {
   const sri = ssri.parse('sha1-foo sha512-bar')
-  t.match(sri.match('sha1-foo'), {
-    algorithm: 'sha1',
-    digest: 'foo',
-  }, 'returns the matching hash')
-  t.match(sri.match(ssri.parse('sha1-foo')), {
-    algorithm: 'sha1',
-    digest: 'foo',
-  }, 'accepts other Integrity objects')
-  t.match(sri.match(ssri.parse('sha1-foo')), {
-    algorithm: 'sha1',
-    digest: 'foo',
-  }, 'accepts other Hash objects')
-  t.match(sri.match({ digest: 'foo', algorithm: 'sha1' }), {
-    algorithm: 'sha1',
-    digest: 'foo',
-  }, 'accepts Hash-like objects')
-  t.match(sri.match('sha1-bar sha512-bar'), {
-    algorithm: 'sha512',
-    digest: 'bar',
-  }, 'returns the strongest match')
-  t.notOk(sri.match('sha512-foo'), 'falsy when match fails')
-  t.notOk(sri.match('sha384-foo'), 'falsy when match fails')
-  t.notOk(sri.match(null), 'falsy when integrity is null')
-  t.end()
+  const match1 = sri.match('sha1-foo')
+  assert.strictEqual(match1.algorithm, 'sha1', 'returns the matching hash')
+  assert.strictEqual(match1.digest, 'foo', 'returns the matching hash')
+
+  const match2 = sri.match(ssri.parse('sha1-foo'))
+  assert.strictEqual(match2.algorithm, 'sha1', 'accepts other Integrity objects')
+  assert.strictEqual(match2.digest, 'foo', 'accepts other Integrity objects')
+
+  const match3 = sri.match(ssri.parse('sha1-foo'))
+  assert.strictEqual(match3.algorithm, 'sha1', 'accepts other Hash objects')
+  assert.strictEqual(match3.digest, 'foo', 'accepts other Hash objects')
+
+  const match4 = sri.match({ digest: 'foo', algorithm: 'sha1' })
+  assert.strictEqual(match4.algorithm, 'sha1', 'accepts Hash-like objects')
+  assert.strictEqual(match4.digest, 'foo', 'accepts Hash-like objects')
+
+  const match5 = sri.match('sha1-bar sha512-bar')
+  assert.strictEqual(match5.algorithm, 'sha512', 'returns the strongest match')
+  assert.strictEqual(match5.digest, 'bar', 'returns the strongest match')
+
+  assert.ok(!sri.match('sha512-foo'), 'falsy when match fails')
+  assert.ok(!sri.match('sha384-foo'), 'falsy when match fails')
+  assert.ok(!sri.match(null), 'falsy when integrity is null')
 })
 
-test('pickAlgorithm()', t => {
+test('pickAlgorithm()', () => {
   const sri = ssri.parse('sha1-foo sha512-bar sha384-baz')
-  t.equal(sri.pickAlgorithm(), 'sha512', 'picked best algorithm')
-  t.equal(
+  assert.strictEqual(sri.pickAlgorithm(), 'sha512', 'picked best algorithm')
+  assert.strictEqual(
     ssri.parse('unknown-deadbeef uncertain-bada55').pickAlgorithm(),
     'unknown',
     'unrecognized algorithm returned if none others known'
   )
-  t.equal(
+  assert.strictEqual(
     sri.pickAlgorithm({
       pickAlgorithm: () => 'sha384',
     }),
     'sha384',
     'custom pickAlgorithm function accepted'
   )
-  t.end()
 })
 
-test('hexDigest()', t => {
-  t.equal(
+test('hexDigest()', () => {
+  assert.strictEqual(
     ssri.parse('sha512-foo').hexDigest(),
     Buffer.from('foo', 'base64').toString('hex'),
     'returned hex version of base64 digest')
-  t.equal(
+  assert.strictEqual(
     ssri.parse('sha512-bar', { single: true }).hexDigest(),
     Buffer.from('bar', 'base64').toString('hex'),
     'returned hex version of base64 digest')
-  t.end()
 })
 
-test('isIntegrity and isHash', t => {
+test('isIntegrity and isHash', () => {
   const sri = ssri.parse('sha512-bar')
-  t.ok(sri.isIntegrity, 'full sri has !!.isIntegrity')
-  t.ok(
+  assert.ok(sri.isIntegrity, 'full sri has !!.isIntegrity')
+  assert.ok(
     sri.sha512[0].isHash,
     'sri hash has !!.isHash'
   )
-  t.end()
 })
 
-test('semi-private', t => {
-  t.equal(ssri.Integrity, undefined, 'Integrity class is module-private.')
-  t.end()
+test('semi-private', () => {
+  assert.strictEqual(ssri.Integrity, undefined, 'Integrity class is module-private.')
 })

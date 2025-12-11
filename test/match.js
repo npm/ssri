@@ -1,8 +1,9 @@
 'use strict'
 
+const { test } = require('node:test')
+const assert = require('node:assert')
 const crypto = require('crypto')
 const fs = require('fs')
-const test = require('tap').test
 
 const ssri = require('..')
 
@@ -12,45 +13,44 @@ function hash (data, algorithm) {
   return crypto.createHash(algorithm).update(data).digest('base64')
 }
 
-test('hashes should match when valid', t => {
+test('hashes should match when valid', () => {
   const integrity = `sha512-${hash(TEST_DATA, 'sha512')}`
   const otherIntegrity = `sha512-${hash('mismatch', 'sha512')}`
   const parsed = ssri.parse(integrity, { single: true })
-  t.same(
+  assert.deepStrictEqual(
     parsed.match(integrity, { single: true }),
     parsed,
     'should return the same algo when digest is equal (single option)'
   )
-  t.same(
+  assert.deepStrictEqual(
     parsed.match('sha-233', { single: true }),
     false,
     'invalid integrity should not match (single option)'
   )
-  t.same(
+  assert.deepStrictEqual(
     parsed.match(null, { single: true }),
     false,
     'null integrity just returns false (single option)'
   )
 
-  t.same(
+  assert.deepStrictEqual(
     parsed.match(integrity),
     parsed,
     'should return the same algo when digest is equal'
   )
-  t.same(
+  assert.deepStrictEqual(
     parsed.match('sha-233'),
     false,
     'invalid integrity should not match'
   )
-  t.same(
+  assert.deepStrictEqual(
     parsed.match(null),
     false,
     'null integrity just returns false'
   )
-  t.same(
+  assert.deepStrictEqual(
     parsed.match(otherIntegrity),
     false,
     'should not match with a totally different integrity'
   )
-  t.end()
 })

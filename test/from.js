@@ -1,8 +1,9 @@
 'use strict'
 
+const { test } = require('node:test')
+const assert = require('node:assert')
 const crypto = require('crypto')
 const fs = require('fs')
-const test = require('tap').test
 
 const ssri = require('..')
 
@@ -16,37 +17,36 @@ function fileStream () {
   return fs.createReadStream(__filename)
 }
 
-test('fromHex', t => {
-  t.equal(
+test('fromHex', () => {
+  assert.strictEqual(
     ssri.fromHex('deadbeef', 'sha1').toString(),
     'sha1-3q2+7w==',
     'created an Integrity object from a given hex + sha'
   )
-  t.equal(
+  assert.strictEqual(
     ssri.fromHex('deadbeef', 'sha512', { options: ['a', 'b', 'c'] }).toString(),
     'sha512-3q2+7w==?a?b?c',
     'options added to entry'
   )
-  t.end()
 })
 
-test('fromData', t => {
-  t.equal(
+test('fromData', () => {
+  assert.strictEqual(
     ssri.fromData(TEST_DATA).toString(),
     `sha512-${hash(TEST_DATA, 'sha512')}`,
     'generates sha512 integrity object from Buffer data'
   )
-  t.equal(
+  assert.strictEqual(
     ssri.fromData(TEST_DATA.toString('utf8')).toString(),
     `sha512-${hash(TEST_DATA, 'sha512')}`,
     'generates sha512 integrity object from String data'
   )
-  t.equal(
+  assert.strictEqual(
     ssri.fromData(TEST_DATA, { algorithms: ['sha256', 'sha384'] }).toString(),
     `sha256-${hash(TEST_DATA, 'sha256')} sha384-${hash(TEST_DATA, 'sha384')}`,
     'can generate multiple metadata entries with opts.algorithms'
   )
-  t.equal(
+  assert.strictEqual(
     ssri.fromData(TEST_DATA, {
       algorithms: ['sha256', 'sha384'],
       options: ['foo', 'bar'],
@@ -56,25 +56,24 @@ test('fromData', t => {
     ].join(' '),
     'can add opts.options to each entry'
   )
-  t.end()
 })
 
-test('fromStream', async t => {
+test('fromStream', async () => {
   let streamEnded
   const stream = fileStream().on('end', () => {
     streamEnded = true
   })
   const noAlgs = await ssri.fromStream(stream)
-  t.equal(
+  assert.strictEqual(
     noAlgs.toString(),
     `sha512-${hash(TEST_DATA, 'sha512')}`,
     'generates sha512 from a stream'
   )
-  t.ok(streamEnded, 'source stream ended')
+  assert.ok(streamEnded, 'source stream ended')
   const goodAlgs = await ssri.fromStream(fileStream(), {
     algorithms: ['sha256', 'sha384'],
   })
-  t.equal(
+  assert.strictEqual(
     goodAlgs.toString(),
     [`sha256-${hash(TEST_DATA, 'sha256')}`, `sha384-${hash(TEST_DATA, 'sha384')}`].join(' '),
     'can generate multiple metadata entries with opts.algorithms'
@@ -83,7 +82,7 @@ test('fromStream', async t => {
     algorithms: ['sha256', 'sha384'],
     options: ['foo', 'bar'],
   })
-  t.equal(badAlgs.toString(), [
+  assert.strictEqual(badAlgs.toString(), [
     `sha256-${hash(TEST_DATA, 'sha256')}?foo?bar`,
     `sha384-${hash(TEST_DATA, 'sha384')}?foo?bar`,
   ].join(' '), 'can add opts.options to each entry')

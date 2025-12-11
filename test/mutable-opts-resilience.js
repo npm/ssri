@@ -1,60 +1,61 @@
+const { test } = require('node:test')
+const assert = require('node:assert')
 const ssri = require('../')
-const t = require('tap')
 
 const data = 'hello world'
 const expectIntegrity = ssri.fromData(data, { algorithms: ['sha512'] })
 const expectSize = data.length
 
-t.test('support adding bad integrity later', t => {
+test('support adding bad integrity later', async () => {
   const opts = {}
   const stream = ssri.integrityStream(opts)
   opts.integrity = ssri.parse('sha512-deepbeets')
-  return t.rejects(stream.end(data).collect(), {
+  await assert.rejects(stream.end(data).collect(), {
     code: 'EINTEGRITY',
   })
 })
 
-t.test('support adding bad integrity string later', t => {
+test('support adding bad integrity string later', async () => {
   const opts = {}
   const stream = ssri.integrityStream(opts)
   opts.integrity = 'sha512-deepbeets'
-  return t.rejects(stream.end(data).collect(), {
+  await assert.rejects(stream.end(data).collect(), {
     code: 'EINTEGRITY',
   })
 })
 
-t.test('support adding bad size later', t => {
+test('support adding bad size later', async () => {
   const opts = {}
   const stream = ssri.integrityStream(opts)
   opts.size = 2
-  return t.rejects(stream.end(data).collect(), {
+  await assert.rejects(stream.end(data).collect(), {
     code: 'EBADSIZE',
   })
 })
 
-t.test('support adding good integrity later', t => {
+test('support adding good integrity later', async () => {
   const opts = {}
   const stream = ssri.integrityStream(opts)
   opts.integrity = expectIntegrity
-  return stream.end(data).on('verified', match => {
-    t.same(match, expectIntegrity.sha512[0])
+  await stream.end(data).on('verified', match => {
+    assert.deepStrictEqual(match, expectIntegrity.sha512[0])
   }).collect()
 })
 
-t.test('support adding good integrity string later', t => {
+test('support adding good integrity string later', async () => {
   const opts = {}
   const stream = ssri.integrityStream(opts)
   opts.integrity = String(expectIntegrity)
-  return stream.end(data).on('verified', match => {
-    t.same(match, expectIntegrity.sha512[0])
+  await stream.end(data).on('verified', match => {
+    assert.deepStrictEqual(match, expectIntegrity.sha512[0])
   }).collect()
 })
 
-t.test('support adding good size later', t => {
+test('support adding good size later', async () => {
   const opts = {}
   const stream = ssri.integrityStream(opts)
   opts.size = expectSize
-  return stream.end(data).on('size', size => {
-    t.same(size, expectSize)
+  await stream.end(data).on('size', size => {
+    assert.deepStrictEqual(size, expectSize)
   }).collect()
 })
