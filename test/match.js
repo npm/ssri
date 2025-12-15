@@ -1,8 +1,8 @@
 'use strict'
 
-const crypto = require('crypto')
-const fs = require('fs')
-const test = require('tap').test
+const crypto = require('node:crypto')
+const fs = require('node:fs')
+const t = require('tap')
 
 const ssri = require('..')
 
@@ -12,9 +12,10 @@ function hash (data, algorithm) {
   return crypto.createHash(algorithm).update(data).digest('base64')
 }
 
-test('hashes should match when valid', t => {
+t.test('hashes should match when valid', t => {
   const integrity = `sha512-${hash(TEST_DATA, 'sha512')}`
   const otherIntegrity = `sha512-${hash('mismatch', 'sha512')}`
+  const otherAlgorithm = `sha1-${hash(TEST_DATA, 'sha1')}`
   const parsed = ssri.parse(integrity, { single: true })
   t.same(
     parsed.match(integrity, { single: true }),
@@ -51,6 +52,11 @@ test('hashes should match when valid', t => {
     parsed.match(otherIntegrity),
     false,
     'should not match with a totally different integrity'
+  )
+  t.same(
+    parsed.match(otherAlgorithm),
+    false,
+    'should not match with a totally different algorithm'
   )
   t.end()
 })

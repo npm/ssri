@@ -89,23 +89,13 @@ test('accepts Hash-likes as input', t => {
 test('omits unsupported algos in strict mode only', t => {
   const xxx = new Array(50).join('x')
 
-  t.match(ssri.parse(`foo-${xxx}`, {
+  t.match(ssri.parse(`md5-${xxx}`, {
     strict: true,
     single: true,
   }), {
-    source: `foo-${xxx}`,
+    source: `md5-${xxx}`,
     algorithm: '',
     digest: '',
-    options: [],
-  })
-
-  t.match(ssri.parse(`foo-${xxx}`, {
-    strict: false,
-    single: true,
-  }), {
-    source: `foo-${xxx}`,
-    algorithm: 'foo',
-    digest: xxx,
     options: [],
   })
 
@@ -122,10 +112,35 @@ test('omits unsupported algos in strict mode only', t => {
   t.end()
 })
 
+test('always omits completely unknown algos', t => {
+  const xxx = new Array(50).join('x')
+
+  t.match(ssri.parse(`foo-${xxx}`, {
+    strict: true,
+    single: true,
+  }), {
+    source: `foo-${xxx}`,
+    algorithm: '',
+    digest: '',
+    options: [],
+  })
+
+  t.match(ssri.parse(`foo-${xxx}`, {
+    strict: false,
+    single: true,
+  }), {
+    source: `foo-${xxx}`,
+    algorithm: '',
+    digest: '',
+    options: [],
+  })
+  t.end()
+})
+
 test('use " " as sep when opts.sep is falsey', t => {
-  const parsed = ssri.parse('yum-somehash foo-barbaz')
-  t.equal(parsed.toString({ sep: false }), 'yum-somehash foo-barbaz')
-  t.equal(parsed.toString({ sep: '\t' }), 'yum-somehash\tfoo-barbaz')
+  const parsed = ssri.parse('sha512-asdf sha1-qwer')
+  t.equal(parsed.toString({ sep: false }), 'sha512-asdf sha1-qwer')
+  t.equal(parsed.toString({ sep: '\t' }), 'sha512-asdf\tsha1-qwer')
   t.end()
 })
 
@@ -175,12 +190,6 @@ test('parses and groups multiple-entry strings', t => {
       source: hashes[1],
       digest: hashes[1].split('-')[1],
       algorithm: 'sha256',
-      options: [],
-    }],
-    unknown: [{
-      source: hashes[3],
-      digest: hashes[3].split('-')[1],
-      algorithm: 'unknown',
       options: [],
     }],
   })
