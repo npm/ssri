@@ -31,4 +31,5 @@
 !/tap-snapshots/
 !/test/
 !/tsconfig.json
+!benchmarks/
 tap-testdir*/
