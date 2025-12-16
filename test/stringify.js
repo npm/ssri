@@ -2,7 +2,8 @@
 
 const crypto = require('crypto')
 const fs = require('fs')
-const test = require('tap').test
+const { test } = require('node:test')
+const assert = require('node:assert')
 
 const ssri = require('..')
 
@@ -12,7 +13,7 @@ function hash (data, algorithm) {
   return crypto.createHash(algorithm).update(data).digest('base64')
 }
 
-test('serializes Integrity-likes', t => {
+test('serializes Integrity-likes', () => {
   const sriLike = {
     sha512: [{
       digest: 'foo',
@@ -27,38 +28,35 @@ test('serializes Integrity-likes', t => {
       algorithm: 'whirlpool',
     }],
   }
-  t.equal(
+  assert.strictEqual(
     ssri.stringify(sriLike),
     'sha512-foo?ayy?woo sha512-bar whirlpool-wut',
     'stringification contains correct data for all entries'
   )
-  t.end()
 })
 
-test('serializes Hash-likes', t => {
+test('serializes Hash-likes', () => {
   const sriLike = {
     digest: 'foo',
     algorithm: 'sha512',
   }
-  t.equal(
+  assert.strictEqual(
     ssri.stringify(sriLike),
     'sha512-foo',
     'serialization has correct data'
   )
-  t.end()
 })
 
-test('serialized plain strings into a valid parsed version', t => {
+test('serialized plain strings into a valid parsed version', () => {
   const sri = ' \tsha512-foo?bar    \n\n\nsha1-nope\r'
-  t.equal(
+  assert.strictEqual(
     ssri.stringify(sri),
     'sha512-foo?bar sha1-nope',
     'cleaned-up string with identical contents generated'
   )
-  t.end()
 })
 
-test('accepts a separator opt', t => {
+test('accepts a separator opt', () => {
   const sriLike = {
     sha512: [{
       algorithm: 'sha512',
@@ -68,18 +66,17 @@ test('accepts a separator opt', t => {
       digest: 'bar',
     }],
   }
-  t.equal(
+  assert.strictEqual(
     ssri.stringify(sriLike, { sep: '\n' }),
     'sha512-foo\nsha512-bar'
   )
-  t.equal(
+  assert.strictEqual(
     ssri.stringify(sriLike, { sep: ' | ' }),
     'sha512-foo | sha512-bar'
   )
-  t.end()
 })
 
-test('support strict serialization', t => {
+test('support strict serialization', () => {
   const sriLike = {
     // only sha256, sha384, and sha512 are allowed by the spec
     sha1: [{
@@ -102,17 +99,16 @@ test('support strict serialization', t => {
       options: ['\x01'],
     }],
   }
-  t.equal(
+  assert.strictEqual(
     ssri.stringify(sriLike, { strict: true }),
     `sha256-${hash(TEST_DATA, 'sha256')}?foo`,
     'entries that do not conform to strict spec interpretation removed'
   )
-  t.equal(
+  assert.strictEqual(
     /* eslint-disable-next-line max-len */
     ssri.stringify('sha512-WrLorGiX4iEWOOOaJSiCrmDIamA47exH+Bz7tVwIPb4sCU8w4iNqGCqYuspMMeU5pgz/sU7koP5u8W3RCUojGw== sha256-Qhx213Vjr6GRSEawEL0WTzlb00whAuXpngy5zxc8HYc=', { sep: ' \r|\n\t', strict: true }),
     /* eslint-disable-next-line max-len */
     'sha512-WrLorGiX4iEWOOOaJSiCrmDIamA47exH+Bz7tVwIPb4sCU8w4iNqGCqYuspMMeU5pgz/sU7koP5u8W3RCUojGw== \r \n\tsha256-Qhx213Vjr6GRSEawEL0WTzlb00whAuXpngy5zxc8HYc=',
     'strict mode replaces non-whitespace characters in separator with space'
   )
-  t.end()
 })
