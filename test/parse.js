@@ -2,7 +2,8 @@
 
 const crypto = require('crypto')
 const fs = require('fs')
-const test = require('tap').test
+const { test } = require('node:test')
+const assert = require('node:assert')
 
 const ssri = require('..')
 
@@ -12,61 +13,53 @@ function hash (data, algorithm) {
   return crypto.createHash(algorithm).update(data).digest('base64')
 }
 
-test('parses single-entry integrity string', t => {
+test('parses single-entry integrity string', () => {
   const sha = hash(TEST_DATA, 'sha512')
   const integrity = `sha512-${sha}`
-  t.same(ssri.parse(integrity), {
-    sha512: [{
-      source: integrity,
-      digest: sha,
-      algorithm: 'sha512',
-      options: [],
-    }],
-  }, 'single entry parsed into full Integrity instance')
-  t.end()
+  const parsed = ssri.parse(integrity)
+  assert.ok(parsed.sha512, 'single entry parsed into full Integrity instance')
+  assert.strictEqual(parsed.sha512.length, 1)
+  assert.strictEqual(parsed.sha512[0].source, integrity)
+  assert.strictEqual(parsed.sha512[0].digest, sha)
+  assert.strictEqual(parsed.sha512[0].algorithm, 'sha512')
+  assert.deepStrictEqual(parsed.sha512[0].options, [])
 })
 
-test('parses options from integrity string', t => {
+test('parses options from integrity string', () => {
   const sha = hash(TEST_DATA, 'sha512')
   const integrity = `sha512-${sha}?one?two?three`
-  t.same(ssri.parse(integrity), {
-    sha512: [{
-      source: integrity,
-      digest: sha,
-      algorithm: 'sha512',
-      options: ['one', 'two', 'three'],
-    }],
-  }, 'single entry parsed into full Integrity instance')
-  t.end()
+  const parsed = ssri.parse(integrity)
+  assert.ok(parsed.sha512, 'single entry parsed into full Integrity instance')
+  assert.strictEqual(parsed.sha512.length, 1)
+  assert.strictEqual(parsed.sha512[0].source, integrity)
+  assert.strictEqual(parsed.sha512[0].digest, sha)
+  assert.strictEqual(parsed.sha512[0].algorithm, 'sha512')
+  assert.deepStrictEqual(parsed.sha512[0].options, ['one', 'two', 'three'])
 })
 
-test('parses options from integrity string in strict mode', t => {
+test('parses options from integrity string in strict mode', () => {
   const sha = hash(TEST_DATA, 'sha512')
   const integrity = `sha512-${sha}?one?two?three`
-  t.same(ssri.parse(integrity, { strict: true }), {
-    sha512: [{
-      source: integrity,
-      digest: sha,
-      algorithm: 'sha512',
-      options: ['one', 'two', 'three'],
-    }],
-  }, 'single entry parsed into full Integrity instance')
-  t.end()
+  const parsed = ssri.parse(integrity, { strict: true })
+  assert.ok(parsed.sha512, 'single entry parsed into full Integrity instance')
+  assert.strictEqual(parsed.sha512.length, 1)
+  assert.strictEqual(parsed.sha512[0].source, integrity)
+  assert.strictEqual(parsed.sha512[0].digest, sha)
+  assert.strictEqual(parsed.sha512[0].algorithm, 'sha512')
+  assert.deepStrictEqual(parsed.sha512[0].options, ['one', 'two', 'three'])
 })
 
-test('can parse single-entry string directly into Hash', t => {
+test('can parse single-entry string directly into Hash', () => {
   const sha = hash(TEST_DATA, 'sha512')
   const integrity = `sha512-${sha}`
-  t.same(ssri.parse(integrity, { single: true }), {
-    source: integrity,
-    digest: sha,
-    algorithm: 'sha512',
-    options: [],
-  }, 'single entry parsed into single Hash instance')
-  t.end()
+  const parsed = ssri.parse(integrity, { single: true })
+  assert.strictEqual(parsed.source, integrity, 'single entry parsed into single Hash instance')
+  assert.strictEqual(parsed.digest, sha)
+  assert.strictEqual(parsed.algorithm, 'sha512')
+  assert.deepStrictEqual(parsed.options, [])
 })
 
-test('accepts Hash-likes as input', t => {
+test('accepts Hash-likes as input', () => {
   const algorithm = 'sha512'
   const digest = hash(TEST_DATA, 'sha512')
   const sriLike = {
@@ -75,76 +68,65 @@ test('accepts Hash-likes as input', t => {
     options: ['foo'],
   }
   const parsed = ssri.parse(sriLike)
-  t.same(parsed, {
-    sha512: [{
-      source: `sha512-${digest}?foo`,
-      algorithm,
-      digest,
-      options: ['foo'],
-    }],
-  }, 'Metadata-like returned as full Integrity instance')
-  t.end()
+  assert.ok(parsed.sha512, 'Metadata-like returned as full Integrity instance')
+  assert.strictEqual(parsed.sha512.length, 1)
+  assert.strictEqual(parsed.sha512[0].source, `sha512-${digest}?foo`)
+  assert.strictEqual(parsed.sha512[0].algorithm, algorithm)
+  assert.strictEqual(parsed.sha512[0].digest, digest)
+  assert.deepStrictEqual(parsed.sha512[0].options, ['foo'])
 })
 
-test('omits unsupported algos in strict mode only', t => {
+test('omits unsupported algos in strict mode only', () => {
   const xxx = new Array(50).join('x')
 
-  t.match(ssri.parse(`md5-${xxx}`, {
+  const result1 = ssri.parse(`md5-${xxx}`, {
     strict: true,
     single: true,
-  }), {
-    source: `md5-${xxx}`,
-    algorithm: '',
-    digest: '',
-    options: [],
   })
+  assert.strictEqual(result1.source, `md5-${xxx}`)
+  assert.strictEqual(result1.algorithm, '')
+  assert.strictEqual(result1.digest, '')
+  assert.deepStrictEqual(result1.options, [])
 
-  t.match(ssri.parse(`sha512-${xxx}`, {
+  const result2 = ssri.parse(`sha512-${xxx}`, {
     strict: true,
     single: true,
-  }), {
-    source: `sha512-${xxx}`,
-    algorithm: 'sha512',
-    digest: xxx,
-    options: [],
   })
-
-  t.end()
+  assert.strictEqual(result2.source, `sha512-${xxx}`)
+  assert.strictEqual(result2.algorithm, 'sha512')
+  assert.strictEqual(result2.digest, xxx)
+  assert.deepStrictEqual(result2.options, [])
 })
 
-test('always omits completely unknown algos', t => {
+test('always omits completely unknown algos', () => {
   const xxx = new Array(50).join('x')
 
-  t.match(ssri.parse(`foo-${xxx}`, {
+  const result1 = ssri.parse(`foo-${xxx}`, {
     strict: true,
     single: true,
-  }), {
-    source: `foo-${xxx}`,
-    algorithm: '',
-    digest: '',
-    options: [],
   })
+  assert.strictEqual(result1.source, `foo-${xxx}`)
+  assert.strictEqual(result1.algorithm, '')
+  assert.strictEqual(result1.digest, '')
+  assert.deepStrictEqual(result1.options, [])
 
-  t.match(ssri.parse(`foo-${xxx}`, {
+  const result2 = ssri.parse(`foo-${xxx}`, {
     strict: false,
     single: true,
-  }), {
-    source: `foo-${xxx}`,
-    algorithm: '',
-    digest: '',
-    options: [],
   })
-  t.end()
+  assert.strictEqual(result2.source, `foo-${xxx}`)
+  assert.strictEqual(result2.algorithm, '')
+  assert.strictEqual(result2.digest, '')
+  assert.deepStrictEqual(result2.options, [])
 })
 
-test('use " " as sep when opts.sep is falsey', t => {
+test('use " " as sep when opts.sep is falsey', () => {
   const parsed = ssri.parse('sha512-asdf sha1-qwer')
-  t.equal(parsed.toString({ sep: false }), 'sha512-asdf sha1-qwer')
-  t.equal(parsed.toString({ sep: '\t' }), 'sha512-asdf\tsha1-qwer')
-  t.end()
+  assert.strictEqual(parsed.toString({ sep: false }), 'sha512-asdf sha1-qwer')
+  assert.strictEqual(parsed.toString({ sep: '\t' }), 'sha512-asdf\tsha1-qwer')
 })
 
-test('accepts Integrity-like as input', t => {
+test('accepts Integrity-like as input', () => {
   const algorithm = 'sha512'
   const digest = hash(TEST_DATA, 'sha512')
   const sriLike = {
@@ -155,105 +137,84 @@ test('accepts Integrity-like as input', t => {
     }],
   }
   const parsed = ssri.parse(sriLike)
-  t.same(parsed, {
-    sha512: [{
-      source: `sha512-${digest}?foo`,
-      algorithm,
-      digest,
-      options: ['foo'],
-    }],
-  }, 'Integrity-like returned as full Integrity instance')
-  t.not(parsed, sriLike, 'Objects are separate instances.')
-  t.end()
+  assert.ok(parsed.sha512, 'Integrity-like returned as full Integrity instance')
+  assert.strictEqual(parsed.sha512.length, 1)
+  assert.strictEqual(parsed.sha512[0].source, `sha512-${digest}?foo`)
+  assert.strictEqual(parsed.sha512[0].algorithm, algorithm)
+  assert.strictEqual(parsed.sha512[0].digest, digest)
+  assert.deepStrictEqual(parsed.sha512[0].options, ['foo'])
+  assert.notStrictEqual(parsed, sriLike, 'Objects are separate instances.')
 })
 
-test('parses and groups multiple-entry strings', t => {
+test('parses and groups multiple-entry strings', () => {
   const hashes = [
     `sha1-${hash(TEST_DATA, 'sha1')}`,
     `sha256-${hash(TEST_DATA, 'sha256')}`,
     'sha1-OthERhaSh',
     'unknown-WoWoWoWoW',
   ]
-  t.same(ssri.parse(hashes.join(' ')), {
-    sha1: [{
-      source: hashes[0],
-      digest: hashes[0].split('-')[1],
-      algorithm: 'sha1',
-      options: [],
-    }, {
-      source: hashes[2],
-      digest: hashes[2].split('-')[1],
-      algorithm: 'sha1',
-      options: [],
-    }],
-    sha256: [{
-      source: hashes[1],
-      digest: hashes[1].split('-')[1],
-      algorithm: 'sha256',
-      options: [],
-    }],
-  })
-  t.end()
+  const parsed = ssri.parse(hashes.join(' '))
+  assert.ok(parsed.sha1)
+  assert.strictEqual(parsed.sha1.length, 2)
+  assert.strictEqual(parsed.sha1[0].source, hashes[0])
+  assert.strictEqual(parsed.sha1[0].digest, hashes[0].split('-')[1])
+  assert.strictEqual(parsed.sha1[0].algorithm, 'sha1')
+  assert.strictEqual(parsed.sha1[1].source, hashes[2])
+  assert.strictEqual(parsed.sha1[1].digest, hashes[2].split('-')[1])
+  assert.strictEqual(parsed.sha1[1].algorithm, 'sha1')
+  assert.ok(parsed.sha256)
+  assert.strictEqual(parsed.sha256.length, 1)
+  assert.strictEqual(parsed.sha256[0].source, hashes[1])
+  assert.strictEqual(parsed.sha256[0].digest, hashes[1].split('-')[1])
+  assert.strictEqual(parsed.sha256[0].algorithm, 'sha256')
 })
 
-test('parses any whitespace as entry separators', t => {
+test('parses any whitespace as entry separators', () => {
   const integrity = '\tsha512-foobarbaz \n\rsha384-bazbarfoo\n         \t  \t\t sha256-foo'
-  t.same(ssri.parse(integrity), {
-    sha512: [{
-      source: 'sha512-foobarbaz',
-      algorithm: 'sha512',
-      digest: 'foobarbaz',
-      options: [],
-    }],
-    sha384: [{
-      source: 'sha384-bazbarfoo',
-      algorithm: 'sha384',
-      digest: 'bazbarfoo',
-      options: [],
-    }],
-    sha256: [{
-      source: 'sha256-foo',
-      algorithm: 'sha256',
-      digest: 'foo',
-      options: [],
-    }],
-  }, 'whitespace around metadata skipped and trimmed')
-  t.end()
+  const parsed = ssri.parse(integrity)
+  assert.ok(parsed.sha512, 'whitespace around metadata skipped and trimmed')
+  assert.strictEqual(parsed.sha512[0].source, 'sha512-foobarbaz')
+  assert.strictEqual(parsed.sha512[0].algorithm, 'sha512')
+  assert.strictEqual(parsed.sha512[0].digest, 'foobarbaz')
+  assert.ok(parsed.sha384)
+  assert.strictEqual(parsed.sha384[0].source, 'sha384-bazbarfoo')
+  assert.strictEqual(parsed.sha384[0].algorithm, 'sha384')
+  assert.strictEqual(parsed.sha384[0].digest, 'bazbarfoo')
+  assert.ok(parsed.sha256)
+  assert.strictEqual(parsed.sha256[0].source, 'sha256-foo')
+  assert.strictEqual(parsed.sha256[0].algorithm, 'sha256')
+  assert.strictEqual(parsed.sha256[0].digest, 'foo')
 })
 
-test('discards invalid format entries', t => {
+test('discards invalid format entries', () => {
   const missingDash = 'thisisbad'
   const missingAlgorithm = '-deadbeef'
   const missingDigest = 'sha512-'
   const valid = `sha512-${hash(TEST_DATA, 'sha512')}`
-  t.equal(ssri.parse([
+  assert.strictEqual(ssri.parse([
     missingDash,
     missingAlgorithm,
     missingDigest,
     valid,
   ].join(' ')).toString(), valid, 'invalid entries thrown out')
-  t.end()
 })
 
-test('trims whitespace from either end', t => {
+test('trims whitespace from either end', () => {
   const integrity = `      sha512-${hash(TEST_DATA, 'sha512')}    `
-  t.same(ssri.parse(integrity), {
-    sha512: [{
-      source: integrity.trim(),
-      algorithm: 'sha512',
-      digest: hash(TEST_DATA, 'sha512'),
-      options: [],
-    }],
-  }, 'whitespace is trimmed from source before parsing')
-  t.end()
+  const parsed = ssri.parse(integrity)
+  assert.ok(parsed.sha512, 'whitespace is trimmed from source before parsing')
+  assert.strictEqual(parsed.sha512[0].source, integrity.trim())
+  assert.strictEqual(parsed.sha512[0].algorithm, 'sha512')
+  assert.strictEqual(parsed.sha512[0].digest, hash(TEST_DATA, 'sha512'))
+  assert.deepStrictEqual(parsed.sha512[0].options, [])
 })
 
-test('supports strict spec parsing', t => {
+test('supports strict spec parsing', () => {
   const valid = `sha512-${hash(TEST_DATA, 'sha512')}`
   const badAlgorithm = `sha1-${hash(TEST_DATA, 'sha1')}`
   const badBase64 = 'sha512-@#$@%#$'
   const badOpts = `${valid}?\x01\x02`
-  t.same(ssri.parse([
+  assert.deepStrictEqual(ssri.parse([
     badAlgorithm,
     badBase64,
     badOpts,
@@ -261,15 +222,13 @@ test('supports strict spec parsing', t => {
   ].join(' '), {
     strict: true,
   }).toString(), valid, 'entries that fail strict check rejected')
-  t.end()
 })
 
-test('does not allow weird stuff in sri', t => {
+test('does not allow weird stuff in sri', () => {
   const badInt = 'mdc2\u0000/../../../hello_what_am_I_doing_here-Juwtg9UFssfrRfwsXu+n/Q=='
   const bad = ssri.parse(badInt)
   const badStrict = ssri.parse(badInt, { strict: true })
   const expect = ssri.parse('')
-  t.strictSame(bad, expect)
-  t.strictSame(badStrict, expect)
-  t.end()
+  assert.deepStrictEqual(bad, expect)
+  assert.deepStrictEqual(badStrict, expect)
 })

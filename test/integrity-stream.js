@@ -1,10 +1,11 @@
 'use strict'
 
-const test = require('tap').test
+const { test } = require('node:test')
+const assert = require('node:assert')
 
 const ssri = require('..')
 
-test('works with no options', t => {
+test('works with no options', (t, done) => {
   const TARGET = ssri.fromData('foo')
   const stream = ssri.integrityStream()
   stream.write('foo')
@@ -14,15 +15,15 @@ test('works with no options', t => {
   })
 
   stream.on('end', () => {
-    t.same(integrity, TARGET, 'matching integrity emitted')
-    t.end()
+    assert.deepStrictEqual(integrity, TARGET, 'matching integrity emitted')
+    done()
   })
 
   stream.resume()
   stream.end()
 })
 
-test('generates integrity', t => {
+test('generates integrity', (t, done) => {
   const TARGET = ssri.fromData('foo')
   const stream = ssri.integrityStream({ integrity: TARGET })
   stream.write('foo')
@@ -43,16 +44,16 @@ test('generates integrity', t => {
     verified = v
   })
   stream.on('end', () => {
-    t.equal(collected, 'foo', 'stream output is complete')
-    t.equal(size, 3, 'size emitted')
-    t.same(integrity, TARGET, 'matching integrity emitted')
-    t.same(verified, TARGET.sha512[0], 'verified emitted')
-    t.end()
+    assert.strictEqual(collected, 'foo', 'stream output is complete')
+    assert.strictEqual(size, 3, 'size emitted')
+    assert.deepStrictEqual(integrity, TARGET, 'matching integrity emitted')
+    assert.deepStrictEqual(verified, TARGET.sha512[0], 'verified emitted')
+    done()
   })
   stream.end()
 })
 
-test('re-emits for late listeners', t => {
+test('re-emits for late listeners', (t, done) => {
   const TARGET = ssri.fromData('foo')
   const stream = ssri.integrityStream({ integrity: TARGET })
   stream.write('foo')
@@ -78,16 +79,16 @@ test('re-emits for late listeners', t => {
     stream.on('verified', v => {
       verified = v
     })
-    t.equal(collected, 'foo', 'stream output is complete')
-    t.equal(size, 3, 'size emitted')
-    t.same(integrity, TARGET, 'matching integrity emitted')
-    t.same(verified, TARGET.sha512[0], 'verified emitted')
-    t.end()
+    assert.strictEqual(collected, 'foo', 'stream output is complete')
+    assert.strictEqual(size, 3, 'size emitted')
+    assert.deepStrictEqual(integrity, TARGET, 'matching integrity emitted')
+    assert.deepStrictEqual(verified, TARGET.sha512[0], 'verified emitted')
+    done()
   })
   stream.end()
 })
 
-test('optional algorithms option', t => {
+test('optional algorithms option', (t, done) => {
   const TARGET = ssri.fromData('foo', { algorithms: ['sha1', 'sha256'] })
   const stream = ssri.integrityStream({ algorithms: ['sha1', 'sha256'] })
   stream.write('foo')
@@ -97,13 +98,13 @@ test('optional algorithms option', t => {
     integrity = i
   })
   stream.on('end', () => {
-    t.same(integrity, TARGET, 'matching integrity emitted')
-    t.end()
+    assert.deepStrictEqual(integrity, TARGET, 'matching integrity emitted')
+    done()
   })
   stream.end()
 })
 
-test('verification for correct data succeeds', t => {
+test('verification for correct data succeeds', (t, done) => {
   const TARGET = ssri.fromData('foo')
   const stream = ssri.integrityStream({
     integrity: TARGET,
@@ -118,22 +119,22 @@ test('verification for correct data succeeds', t => {
     integrity = i
   })
   stream.on('end', () => {
-    t.equal(collected, 'foo', 'stream output is complete')
-    t.same(integrity, TARGET, 'matching integrity emitted')
-    t.end()
+    assert.strictEqual(collected, 'foo', 'stream output is complete')
+    assert.deepStrictEqual(integrity, TARGET, 'matching integrity emitted')
+    done()
   })
   stream.end()
 })
 
-test('verification for wrong data fails', t => {
+test('verification for wrong data fails', (t, done) => {
   const stream = ssri.integrityStream({
     integrity: ssri.fromData('bar'),
   })
   stream.write('foo')
   stream.on('data', () => {})
   stream.on('error', err => {
-    t.equal(err.code, 'EINTEGRITY', 'errors with EINTEGRITY on mismatch')
-    t.end()
+    assert.strictEqual(err.code, 'EINTEGRITY', 'errors with EINTEGRITY on mismatch')
+    done()
   })
   stream.end()
 })
