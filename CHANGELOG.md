@@ -1,5 +1,16 @@
 # Changelog
 
+## [13.0.1](https://github.com/npm/ssri/compare/v13.0.0...v13.0.1) (2025-12-16)
+### Bug Fixes
+* [`eb83316`](https://github.com/npm/ssri/commit/eb833161e9731cbafd679fb0cd4883cc57bf869f) [#160](https://github.com/npm/ssri/pull/160) hash: filter on known hashes (@wraithgar)
+* [`5b98568`](https://github.com/npm/ssri/commit/5b98568ecb1f096a62440571213072bc7fa78057) [#160](https://github.com/npm/ssri/pull/160) code cleanup (@wraithgar)
+### Chores
+* [`940288e`](https://github.com/npm/ssri/commit/940288e5a54226721526db3195d102230cccfdb6) [#163](https://github.com/npm/ssri/pull/163) remove tap (@owlstronaut)
+* [`26e09b8`](https://github.com/npm/ssri/commit/26e09b8765bce1ea658bf677cee23b45393a68c6) [#163](https://github.com/npm/ssri/pull/163) move to node:test (@owlstronaut)
+* [`5ca3f4a`](https://github.com/npm/ssri/commit/5ca3f4ad4afdef2d4516287fde79e071d4c8a2ac) [#161](https://github.com/npm/ssri/pull/161) add benchmarks (#161) (@H4ad)
+* [`cf69694`](https://github.com/npm/ssri/commit/cf696941026a4afcf07c4c2dfef54e44912a290d) [#156](https://github.com/npm/ssri/pull/156) bump @npmcli/eslint-config from 5.1.0 to 6.0.0 (#156) (@dependabot[bot])
+* [`05ce2c5`](https://github.com/npm/ssri/commit/05ce2c5aa7511431fae297fa01bf26b8cabdc461) [#158](https://github.com/npm/ssri/pull/158) bump @npmcli/template-oss from 4.28.0 to 4.28.1 (#158) (@dependabot[bot], @npm-cli-bot)
+
 ## [13.0.0](https://github.com/npm/ssri/compare/v12.0.0...v13.0.0) (2025-10-22)
 ### ⚠️ BREAKING CHANGES
 * `ssri` now supports node `^20.17.0 || >=22.9.0`
