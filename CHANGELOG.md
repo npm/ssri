@@ -1,5 +1,16 @@
 # Changelog
 
+## [14.0.0](https://github.com/npm/ssri/compare/v13.0.1...v14.0.0) (2026-05-08)
+### ⚠️ BREAKING CHANGES
+* `ssri` now supports node `^22.22.2 || ^24.15.0 || >=26.0.0`
+* template-oss-apply
+### Features
+* [`7087885`](https://github.com/npm/ssri/commit/7087885641e1ecbfd72c679e768a626cbeddf6b1) [#167](https://github.com/npm/ssri/pull/167) bump to new node engine range (@owlstronaut)
+* [`ae8172c`](https://github.com/npm/ssri/commit/ae8172cdeb4df0c64ed73f21a36e2482592f64a7) [#167](https://github.com/npm/ssri/pull/167) template-oss-apply (@owlstronaut)
+### Chores
+* [`bda78e5`](https://github.com/npm/ssri/commit/bda78e5bbbb6b126112013c1612fc31d6720e6a9) [#167](https://github.com/npm/ssri/pull/167) template-oss-apply (@owlstronaut)
+* [`12c6581`](https://github.com/npm/ssri/commit/12c6581bdd03b6f618089408384b5da0d208d95a) [#166](https://github.com/npm/ssri/pull/166) bump @npmcli/template-oss from 4.29.0 to 4.30.0 (#166) (@dependabot[bot], @npm-cli-bot)
+
 ## [13.0.1](https://github.com/npm/ssri/compare/v13.0.0...v13.0.1) (2025-12-16)
 ### Bug Fixes
 * [`eb83316`](https://github.com/npm/ssri/commit/eb833161e9731cbafd679fb0cd4883cc57bf869f) [#160](https://github.com/npm/ssri/pull/160) hash: filter on known hashes (@wraithgar)
