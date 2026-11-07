@@ -59,6 +59,43 @@ ssri.fromData(fs.readFileSync('./my-file')) // === parsed
 ssri.checkData(fs.readFileSync('./my-file'), integrity) // => 'sha512'
 ```
 
+#### Download a file with Node.js fetch
+
+Get the expected SRI independently from trusted publisher metadata, such as a
+verified signed release manifest. The SRI calculated from the download describes
+the bytes received. Verifying them depends on the trusted expected SRI.
+
+Save this example as `download.cjs` and run
+`node download.cjs https://example.com/releases/archive.tgz "<expected-sri>"`,
+replacing the example URL and expected SRI with the values for your download.
+
+```javascript
+const ssri = require('ssri')
+
+async function download (url, expectedIntegrity) {
+  const response = await fetch(url)
+  if (!response.ok) {
+    throw new Error(`Download failed: HTTP ${response.status}`)
+  }
+
+  const data = Buffer.from(await response.arrayBuffer())
+  const integrity = ssri.fromData(data).toString()
+  if (!ssri.checkData(data, expectedIntegrity)) {
+    throw new Error('Download does not match the expected SRI')
+  }
+
+  return { data, integrity }
+}
+
+const [url, expectedIntegrity] = process.argv.slice(2)
+download(url, expectedIntegrity).then(({ integrity }) => {
+  console.log(integrity)
+}).catch(error => {
+  console.error(error.message)
+  process.exitCode = 1
+})
+```
+
 ### Features
 
 * Parses and stringifies SRI strings.
