@@ -88,6 +88,20 @@ test('re-emits for late listeners', (t, done) => {
   stream.end()
 })
 
+test('re-emits size for late listeners on an empty stream', (t, done) => {
+  const stream = ssri.integrityStream()
+  stream.on('end', () => {
+    let size
+    stream.on('size', s => {
+      size = s
+    })
+    assert.strictEqual(size, 0, 'zero size emitted')
+    done()
+  })
+  stream.resume()
+  stream.end()
+})
+
 test('optional algorithms option', (t, done) => {
   const TARGET = ssri.fromData('foo', { algorithms: ['sha1', 'sha256'] })
   const stream = ssri.integrityStream({ algorithms: ['sha1', 'sha256'] })
