@@ -2,8 +2,81 @@
 
 const { test } = require('node:test')
 const assert = require('node:assert')
+const { Readable } = require('node:stream')
 
 const ssri = require('..')
+
+test('counts the bytes emitted for string and binary chunks', async t => {
+  const cases = [
+    ['ASCII', ['plain ', 'text']],
+    ['Unicode', ['café ', '雪', ' 💻']],
+    ['split surrogate pair', ['\uD83D', '\uDCBB']],
+    ['unpaired surrogates', ['\uD83D text \uDCBB']],
+    ['mixed chunks', ['雪', Buffer.from([0, 255]), new Uint8Array([1, 2, 3])]],
+    ['wide typed array', [new Uint16Array([256, 512])]],
+    ['DataView slice', [new DataView(Uint8Array.from([0, 1, 2, 3]).buffer, 1, 2)]],
+  ]
+
+  for (const [name, chunks] of cases) {
+    await t.test(name, async () => {
+      const expected = Buffer.concat(chunks.map(chunk => typeof chunk === 'string'
+        ? Buffer.from(chunk)
+        : Buffer.from(chunk.buffer, chunk.byteOffset, chunk.byteLength)))
+      const target = ssri.fromData(expected)
+      const stream = ssri.integrityStream({ size: expected.length, integrity: target })
+      let size
+      let integrity
+      let verified
+      stream.on('size', value => {
+        size = value
+      })
+      stream.on('integrity', value => {
+        integrity = value
+      })
+      stream.on('verified', value => {
+        verified = value
+      })
+      const output = stream.concat()
+      for (const chunk of chunks) {
+        stream.write(chunk)
+      }
+      stream.end()
+
+      assert.deepStrictEqual(await output, expected)
+      assert.strictEqual(stream.size, expected.length)
+      assert.strictEqual(size, expected.length)
+      assert.deepStrictEqual(integrity, target)
+      assert.deepStrictEqual(verified, target.sha512[0])
+      let lateSize
+      stream.on('size', value => {
+        lateSize = value
+      })
+      assert.strictEqual(lateSize, expected.length)
+    })
+  }
+})
+
+test('checks Unicode streams against their byte size', async () => {
+  const chunks = ['café ', '雪', ' 💻']
+  const data = Buffer.from(chunks.join(''))
+  const target = ssri.fromData(data)
+  assert.deepStrictEqual(
+    await ssri.fromStream(Readable.from(chunks), { size: data.length }),
+    target
+  )
+  assert.deepStrictEqual(
+    await ssri.checkStream(Readable.from(chunks), target, { size: data.length }),
+    target.sha512[0]
+  )
+  await assert.rejects(
+    ssri.checkStream(Readable.from(chunks), target, { size: data.length - 1 }),
+    { code: 'EBADSIZE', found: data.length, expected: data.length - 1 }
+  )
+  await assert.rejects(
+    ssri.checkStream(Readable.from(chunks), ssri.fromData('different'), { size: data.length }),
+    { code: 'EINTEGRITY' }
+  )
+})
 
 test('works with no options', (t, done) => {
   const TARGET = ssri.fromData('foo')
